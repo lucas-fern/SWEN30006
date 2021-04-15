@@ -1,0 +1,28 @@
+\documentclass{article}
+
+\usepackage[a4paper,margin=2cm]{geometry}
+
+\title{SWEN30006 Assignment 1 - Report}
+\date{\today}
+\author{Workshop 09, Team 02\\Lucas Fern \& Cameron Maddern}
+
+\begin{document}
+\maketitle
+\noindent This isn't actually what we'll put in the final report, I just wanted to keep track of the changes I was making.
+\section{List of Changes}
+\begin{itemize}
+    \item Added the mark-up percentage and activity price Automail class as constants. I would add them to the properties file but can't according to the spec, so this was the next best option to me.
+    \item Added a function to the MailItem to estimate the amount of activity units which will be required to deliver it.
+\end{itemize}
+\section{Questions}
+\begin{itemize}
+    \item All resolved now, there is so much info. on the discussion board, took me ages to read all the questions but was pretty helpful.
+\end{itemize}
+\section{Choices}
+Feel free to make any choices of your own. If you have better ideas than what I've got here go for it.
+\begin{itemize}
+    \item Choose to make the Charge for a delivery not be affected by whether the robot is delivering one or more items. If delivering two items the robot will charge each customer as if it had made a direct trip to them and back to the mail room, charging activity units for both directions.
+    \item When initialised, the system should calculate service fees for every floor and store them (cost that cannot be passed on to the tenants). It should retry until all are successful so that we certainly have a service fee for each floor. Then for each delivery we make one attempt to update the service fee, can use the old value if it fails, or update it with a new value.
+    \item May want to couple the robot with Automail and store the service fees for each floor in the Automail class? Otherwise maybe need to come up with an alternative solution to each robot storing all of the service fees by itself.
+\end{itemize}
+\end{document}

@@ -3,7 +3,9 @@ package automail;
 import simulation.IMailDelivery;
 
 public class Automail {
-	      
+    public static final double ACTIVITY_PRICE = 0.224;
+    public static final double MARKUP_PROP = 0.059;
+
     public Robot[] robots;
     public MailPool mailPool;
     

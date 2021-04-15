@@ -34,18 +34,18 @@ public class Simulation {
 
     public static void main(String[] args) throws InstantiationException, IllegalAccessException, ClassNotFoundException, IOException {
     	
-    	/** Load properties for simulation based on either default or a properties file.**/
+    	/* Load properties for simulation based on either default or a properties file.**/
     	Properties automailProperties = setUpProperties();
     	
     	//An array list to record mails that have been delivered
         MAIL_DELIVERED = new ArrayList<MailItem>();
                 
-        /** This code section below is to save a random seed for generating mails.
+        /* This code section below is to save a random seed for generating mails.
          * If a program argument is entered, the first argument will be a random seed.
          * If not a random seed will be from a properties file. 
          * Otherwise, no a random seed. */
         
-        /** Used to see whether a seed is initialized or not */
+        /* Used to see whether a seed is initialized or not */
         HashMap<Boolean, Integer> seedMap = new HashMap<>();
         if (args.length == 0 ) { // No arg
         	String seedProp = automailProperties.getProperty("Seed");
@@ -69,15 +69,16 @@ public class Simulation {
 			mException.printStackTrace();
 		}
         
-        /**
+        /*
          * This code section is for running a simulation
          */
+
         /* Instantiate MailPool and Automail */
      	MailPool mailPool = new MailPool(NUM_ROBOTS);
         Automail automail = new Automail(mailPool, new ReportDelivery(), NUM_ROBOTS);
         MailGenerator mailGenerator = new MailGenerator(MAIL_TO_CREATE, MAIL_MAX_WEIGHT, mailPool, seedMap);
         
-        /** Generate all the mails */
+        /* Generate all the mails */
         mailGenerator.generateAllMail();
         while(MAIL_DELIVERED.size() != mailGenerator.MAIL_TO_CREATE) {
         	// System.out.printf("Delivered: %4d; Created: %4d%n", MAIL_DELIVERED.size(), mailGenerator.MAIL_TO_CREATE);
@@ -115,7 +116,7 @@ public class Simulation {
 		} finally {
 			 if (inStream != null) {
 	                inStream.close();
-	            }
+			 }
 		}
 		
 		// Floors

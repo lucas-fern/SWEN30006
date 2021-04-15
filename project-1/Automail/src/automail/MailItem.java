@@ -9,7 +9,7 @@ import java.util.TreeMap;
  * Represents a mail item
  */
 public class MailItem {
-	
+
     /** Represents the destination floor to which the mail is intended to go */
     protected final int destination_floor;
     /** The mail identifier */
@@ -65,7 +65,7 @@ public class MailItem {
     *
     * @return the weight of the mail item
     */
-   public int getWeight(){
+    public int getWeight(){
        return weight;
    }
    
@@ -79,4 +79,15 @@ public class MailItem {
 		if (hash == null) { hash = count++; hashMap.put(hash0, hash); }
 		return hash;
 	}
+
+    /**
+     * Estimates the amount of activity units a robot will spend on a round trip to deliver the MailItem
+     * @return The estimated amount of activity units.
+     */
+	public double estimateActivityToDeliver(float unitsPerFloor, float unitsPerLookup) {
+	    int floorDistance = destination_floor - 1;  // Mail room is on floor 1, might want to pull this constant out?
+	    float movementUnits = unitsPerFloor * (floorDistance * 2);
+
+	    return movementUnits + unitsPerLookup;  // Always want to charge for only one lookup. Our design will only do 1
+    }
 }
