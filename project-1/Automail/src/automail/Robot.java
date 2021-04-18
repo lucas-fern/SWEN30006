@@ -174,6 +174,10 @@ public class Robot {
 	public MailItem getTube() {
 		return tube;
 	}
+	
+	public MailItem getDeliveryItem() {
+		return deliveryItem;
+	}
 
 	public boolean isEmpty() {
 		return (deliveryItem == null && tube == null);

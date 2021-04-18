@@ -31,6 +31,14 @@ public class Simulation {
     
     private static ArrayList<MailItem> MAIL_DELIVERED;
     private static double total_delay = 0;
+    
+    // The total billable activity
+    private static double billableActivity = 0;
+    // The total activity cost
+    private static double activityCost = 0;
+    // The total service cost
+    private static double serviceCost = 0;
+    
 
     public static void main(String[] args) throws InstantiationException, IllegalAccessException, ClassNotFoundException, IOException {
     	
@@ -153,6 +161,13 @@ public class Simulation {
     			MAIL_DELIVERED.add(deliveryItem);
                 System.out.printf("T: %3d > Delivered(%4d) [%s]%n",
 						Clock.Time(), MAIL_DELIVERED.size(), deliveryItem.toString(CHARGE_DISPLAY));
+                
+                // Calculate total billable activity
+                billableActivity += deliveryItem.calculateCharge();
+                //Calculate total activity cost
+                activityCost += deliveryItem.calculateActivityCost();
+                //Calculate total service cost
+                serviceCost += deliveryItem.getServiceFee();
     			// Calculate delivery score
     			total_delay += calculateDeliveryDelay(deliveryItem);
     		}
@@ -179,5 +194,14 @@ public class Simulation {
         System.out.println("T: "+Clock.Time()+" | Simulation complete!");
         System.out.println("Final Delivery time: "+Clock.Time());
         System.out.printf("Delay: %.2f%n", total_delay);
+        System.out.println("Total Items: " + MAIL_DELIVERED.size());
+        System.out.printf("Total Billable Activity: %.2f%n", billableActivity);
+        System.out.printf("Total Activity Cost: %.2f%n", activityCost);
+        System.out.printf("Total Service Cost: %.2f%n", serviceCost);
     }
+    
+    public static double getChargeThreshold() {
+    	return CHARGE_THRESHOLD;
+    }
+    
 }

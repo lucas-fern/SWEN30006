@@ -3,8 +3,10 @@ package automail;
 import java.util.LinkedList;
 import java.util.Comparator;
 import java.util.ListIterator;
+import java.util.Properties;
 
 import exceptions.ItemTooHeavyException;
+import simulation.Simulation;
 
 /**
  * addToPool is called when there are mail items newly arrived at the building to add to the MailPool or
@@ -70,17 +72,44 @@ public class MailPool {
 	
 	//load items to the robot
 	private void loadItem(ListIterator<Robot> i) throws ItemTooHeavyException {
+		
 		Robot robot = i.next();
 		assert(robot.isEmpty());
 		// System.out.printf("P: %3d%n", pool.size());
 		ListIterator<Item> j = pool.listIterator();
 		if (pool.size() > 0) {
 			try {
-				robot.addToHand(j.next().mailItem); // hand first as we want higher priority delivered first
-				j.remove();
-				if (pool.size() > 0) {
-					robot.addToTube(j.next().mailItem);
+				while(j.hasNext()) {
+					Item temp = j.next();
+					// Check for high priority mail to add to hand
+					if(temp.mailItem.calculateCharge() > Simulation.getChargeThreshold()) {
+						robot.addToHand(temp.mailItem); // hand first as we want higher priority delivered first
+						j.remove();
+						break;
+					}
+				}
+				j = pool.listIterator();
+				// If no items greater than the charge threshold add the item at the front of the list
+				if(robot.getDeliveryItem() == null) {
+					robot.addToHand(j.next().mailItem); // hand first as we want higher priority delivered first
 					j.remove();
+				}
+				
+				if (pool.size() > 0) {
+					while(j.hasNext()) {
+						Item temp = j.next();
+						// Check for high priority mail to add to tube
+						if(temp.mailItem.calculateCharge() > Simulation.getChargeThreshold()) {
+							robot.addToTube(temp.mailItem); // hand first as we want higher priority delivered first
+							j.remove();
+							break;
+						}
+					}
+					j = pool.listIterator();
+					if(robot.getTube() == null) {
+						robot.addToTube(j.next().mailItem); 
+						j.remove();
+					}
 				}
 				robot.dispatch(); // send the robot off if it has any items to deliver
 				i.remove();       // remove from mailPool queue

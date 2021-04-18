@@ -42,13 +42,8 @@ public class MailItem {
     /** A toString method which includes the added statistics tracking if called with argument true. */
     public String toString(boolean displayCharge){
         if (displayCharge) {
-            double activityUnits = calculateTotalActivityUnits();
-            double activityCost = activityUnits * Automail.ACTIVITY_PRICE;
-            double cost = serviceFee + activityCost;
-            double charge = cost * (1 + Automail.MARKUP_PROP);
-
             return String.format("Mail Item:: ID: %6s | Arrival: %4d | Destination: %2d | Weight: %4d | Charge: %.2f | Cost: %.2f | Fee: %.2f | Activity: %.2f",
-                    id, arrival_time, destination_floor, weight, charge, cost, serviceFee, activityUnits);
+                    id, arrival_time, destination_floor, weight, calculateCharge(), calculateCost(), serviceFee, calculateTotalActivityUnits());
         } else {
             return String.format("Mail Item:: ID: %6s | Arrival: %4d | Destination: %2d | Weight: %4d",
                     id, arrival_time, destination_floor, weight);
@@ -137,5 +132,17 @@ public class MailItem {
 
     public double getServiceFee() {
         return serviceFee;
+    }
+    
+    public double calculateActivityCost() {
+        return calculateTotalActivityUnits() * Automail.ACTIVITY_PRICE;
+    }
+    
+    private double calculateCost() {
+        return serviceFee + calculateActivityCost();
+    }
+    
+    public double calculateCharge() {
+    	return calculateCost() * (1 + Automail.MARKUP_PROP);
     }
 }
