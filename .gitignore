@@ -1,4 +1,23 @@
 monopoly
 workshops
 .idea
+.settings
 A1-spec.pdf
+Automail.iml
+
+# For LaTeX (source: https://github.com/github/gitignore/blob/master/TeX.gitignore)
+## Core latex/pdflatex auxiliary files:
+*.aux
+*.lof
+*.log
+*.lot
+*.fls
+*.out
+*.toc
+*.fmt
+*.fot
+*.cb
+*.cb2
+*.fdb_latexmk
+*.synctex.gz
+.*.lb

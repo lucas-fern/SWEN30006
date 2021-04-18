@@ -1,5 +1,7 @@
 package automail;
 
+import simulation.Building;
+
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -19,6 +21,11 @@ public class MailItem {
     /** The weight in grams of the mail item */
     protected final int weight;
 
+    // The service fee to the recipient for delivering the MailItem
+    private double serviceFee = 0;
+    // The amount of activity units spent to take an item to its destination
+    private double activityUnitsToDeliver = 0;
+
     /**
      * Constructor for a MailItem
      * @param dest_floor the destination floor intended for this mail item
@@ -32,9 +39,37 @@ public class MailItem {
         this.weight = weight;
     }
 
+    /** A toString method which includes the added statistics tracking if called with argument true. */
+    public String toString(boolean displayCharge){
+        if (displayCharge) {
+            double activityUnits = calculateTotalActivityUnits();
+            double activityCost = activityUnits * Automail.ACTIVITY_PRICE;
+            double cost = serviceFee + activityCost;
+            double charge = cost * (1 + Automail.MARKUP_PROP);
+
+            return String.format("Mail Item:: ID: %6s | Arrival: %4d | Destination: %2d | Weight: %4d | Charge: %.2f | Cost: %.2f | Fee: %.2f | Activity: %.2f",
+                    id, arrival_time, destination_floor, weight, charge, cost, serviceFee, activityUnits);
+        } else {
+            return String.format("Mail Item:: ID: %6s | Arrival: %4d | Destination: %2d | Weight: %4d",
+                    id, arrival_time, destination_floor, weight);
+        }
+    }
+
+
+    /** A default implementation for the toString method, calls the toString method with statistics tracking with
+     * argument false so that the statistics tracking is not included.  */
     @Override
     public String toString(){
-        return String.format("Mail Item:: ID: %6s | Arrival: %4d | Destination: %2d | Weight: %4d", id, arrival_time, destination_floor, weight);
+        return toString(false);
+    }
+
+    /** Calculates the total amount of activity units required by a robot to perform a delivery and return to the
+     * mail room. Assumes that the robot travels directly back to the mail room after delivering and doesn't
+     * discount when robots deliver multiple items. */
+    private double calculateTotalActivityUnits() {
+        double activityUnitsToReturn = (destination_floor - Building.MAILROOM_LOCATION) * Robot.UNITS_PER_FLOOR;
+
+        return activityUnitsToDeliver + activityUnitsToReturn;
     }
 
     /**
@@ -84,10 +119,23 @@ public class MailItem {
      * Estimates the amount of activity units a robot will spend on a round trip to deliver the MailItem
      * @return The estimated amount of activity units.
      */
-	public double estimateActivityToDeliver(float unitsPerFloor, float unitsPerLookup) {
-	    int floorDistance = destination_floor - 1;  // Mail room is on floor 1, might want to pull this constant out?
-	    float movementUnits = unitsPerFloor * (floorDistance * 2);
+	public double estimateActivityToDeliver() {
+	    int floorDistance = destination_floor - Building.MAILROOM_LOCATION;
+        double movementUnits = Robot.UNITS_PER_FLOOR * (floorDistance * 2);  // *2 to charge to and from the mail room
 
-	    return movementUnits + unitsPerLookup;  // Always want to charge for only one lookup. Our design will only do 1
+	    return movementUnits + Robot.UNITS_PER_LOOKUP;  // Always want to charge for only one lookup. Our design will only do 1
+    }
+
+    /** Adds an amount of activity units taken to deliver the mail item to the total. */
+    public void increaseActivityUnitsToDeliver(double increase) {
+        this.activityUnitsToDeliver = this.activityUnitsToDeliver + increase;
+    }
+
+    public void setServiceFee(double serviceFee) {
+        this.serviceFee = serviceFee;
+    }
+
+    public double getServiceFee() {
+        return serviceFee;
     }
 }

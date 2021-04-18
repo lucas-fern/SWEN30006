@@ -1,5 +1,6 @@
 package automail;
 
+import com.unimelb.swen30006.wifimodem.WifiModem;
 import exceptions.ExcessiveDeliveryException;
 import exceptions.ItemTooHeavyException;
 import simulation.Building;
@@ -12,6 +13,10 @@ import simulation.IMailDelivery;
 public class Robot {
 	
     static public final int INDIVIDUAL_MAX_WEIGHT = 2000;
+    static public final double UNITS_PER_FLOOR = 5;
+    static public final double UNITS_PER_LOOKUP = 0.1;
+
+    public static WifiModem wModem = null;
 
     IMailDelivery delivery;
     protected final String id;
@@ -60,25 +65,25 @@ public class Robot {
      */
     public void operate() throws ExcessiveDeliveryException {   
     	switch(current_state) {
-    		/** This state is triggered when the robot is returning to the mailroom after a delivery */
+    		/* This state is triggered when the robot is returning to the mail room after a delivery */
     		case RETURNING:
-    			/** If its current position is at the mailroom, then the robot should change state */
+    			/* If its current position is at the mail room, then the robot should change state */
                 if(current_floor == Building.MAILROOM_LOCATION){
                 	if (tube != null) {
                 		mailPool.addToPool(tube);
                         System.out.printf("T: %3d > old addToPool [%s]%n", Clock.Time(), tube.toString());
                         tube = null;
                 	}
-        			/** Tell the sorter the robot is ready */
+        			/* Tell the sorter the robot is ready */
         			mailPool.registerWaiting(this);
                 	changeState(RobotState.WAITING);
                 } else {
-                	/** If the robot is not at the mailroom floor yet, then move towards it! */
+                	/* If the robot is not at the mail room floor yet, then move towards it! */
                     moveTowards(Building.MAILROOM_LOCATION);
                 	break;
                 }
     		case WAITING:
-                /** If the StorageTube is ready and the Robot is waiting in the mailroom then start the delivery */
+                /* If the StorageTube is ready and the Robot is waiting in the mail room then start the delivery */
                 if(!isEmpty() && receivedDispatch){
                 	receivedDispatch = false;
                 	deliveryCounter = 0; // reset delivery counter
@@ -88,26 +93,31 @@ public class Robot {
                 break;
     		case DELIVERING:
     			if(current_floor == destination_floor){ // If already here drop off either way
-                    /** Delivery complete, report this to the simulator! */
+    			    // Attempt to update the service fee for the floor once,
+                    // then use the stored service fee for the item
+                    attemptSetServiceFee(destination_floor);
+                    deliveryItem.increaseActivityUnitsToDeliver(Robot.UNITS_PER_LOOKUP);
+                    deliveryItem.setServiceFee(Automail.getServiceFee(destination_floor));
+
+                    /* Delivery complete, report this to the simulator! */
                     delivery.deliver(deliveryItem);
                     deliveryItem = null;
                     deliveryCounter++;
-                    if(deliveryCounter > 2){  // Implies a simulation bug
+                    if (deliveryCounter > 2) {  // Implies a simulation bug
                     	throw new ExcessiveDeliveryException();
                     }
-                    /** Check if want to return, i.e. if there is no item in the tube*/
-                    if(tube == null){
+                    /* Check if want to return, i.e. if there is no item in the tube*/
+                    if (tube == null) {
                     	changeState(RobotState.RETURNING);
-                    }
-                    else{
-                        /** If there is another item, set the robot's route to the location to deliver the item */
+                    } else {
+                        /* If there is another item, set the robot's route to the location to deliver the item */
                         deliveryItem = tube;
                         tube = null;
                         setDestination();
                         changeState(RobotState.DELIVERING);
                     }
     			} else {
-	        		/** The robot is not at the destination yet, move towards it! */
+	        		/* The robot is not at the destination yet, move towards it! */
 	                moveTowards(destination_floor);
     			}
                 break;
@@ -118,19 +128,27 @@ public class Robot {
      * Sets the route for the robot
      */
     private void setDestination() {
-        /** Set the destination floor */
+        /* Set the destination floor */
         destination_floor = deliveryItem.getDestFloor();
     }
 
     /**
-     * Generic function that moves the robot towards the destination
+     * Generic function that moves the robot towards the destination and adds activity units to the total for each item
      * @param destination the floor towards which the robot is moving
      */
     private void moveTowards(int destination) {
-        if(current_floor < destination){
+        if (current_floor < destination) {
             current_floor++;
         } else {
             current_floor--;
+        }
+
+        // Increase the amount of movement which was required for each delivery item
+        if (deliveryItem != null) {
+            deliveryItem.increaseActivityUnitsToDeliver(Robot.UNITS_PER_FLOOR);
+        }
+        if (tube != null) {
+            tube.increaseActivityUnitsToDeliver(Robot.UNITS_PER_FLOOR);
         }
     }
     
@@ -173,4 +191,14 @@ public class Robot {
 		if (tube.weight > INDIVIDUAL_MAX_WEIGHT) throw new ItemTooHeavyException();
 	}
 
+	/** Makes an attempt to retrieve and set a new service fee for a floor. Returns positive if successful, else neg. */
+	public int attemptSetServiceFee(int floor) {
+        double newFee = wModem.forwardCallToAPI_LookupPrice(floor);
+
+        if (newFee >= 0) {
+            Automail.setServiceFee(floor, newFee);
+            return 1;
+        }
+        return -1;
+    }
 }

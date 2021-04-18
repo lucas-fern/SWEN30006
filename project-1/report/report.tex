@@ -13,10 +13,18 @@
 \begin{itemize}
     \item Added the mark-up percentage and activity price Automail class as constants. I would add them to the properties file but can't according to the spec, so this was the next best option to me.
     \item Added a function to the MailItem to estimate the amount of activity units which will be required to deliver it.
+    \item Each robot stores a reference to the Automail class so that it can access and update the service fees for each floor.
+    \item Moved the Wifi Modem to the Robot class to increase cohesion (since robots perform the lookups)
+    \item Implemented an overloaded toString method for the Mail Items so that we can print out the extra statistics by passing in a true parameter.
+    \item Added the charge, cost, fee, and activity tracking capability to the robots and mail items.
+    \item Automail uses one of the robots to set the service fees for each floor when it is initialised.
+    \item The robots make one attempt to update the service fee upon delivery. They add this activity cost to the mail item they are delivering.
+    \item When the robots move, they increase the activity units required for the delivery of both their items.
 \end{itemize}
 \section{Questions}
 \begin{itemize}
-    \item All resolved now, there is so much info. on the discussion board, took me ages to read all the questions but was pretty helpful.
+    \item Does having the robots communicate with the Automail class `violate physical limitations'?
+    % \item All resolved now, there is so much info. on the discussion board, took me ages to read all the questions but was pretty helpful.
 \end{itemize}
 \section{Choices}
 Feel free to make any choices of your own. If you have better ideas than what I've got here go for it.

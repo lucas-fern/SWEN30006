@@ -15,6 +15,7 @@ import com.unimelb.swen30006.wifimodem.WifiModem;
 import automail.Automail;
 import automail.MailItem;
 import automail.MailPool;
+import automail.Robot;
 
 /**
  * This class simulates the behaviour of AutoMail
@@ -30,7 +31,6 @@ public class Simulation {
     
     private static ArrayList<MailItem> MAIL_DELIVERED;
     private static double total_delay = 0;
-    private static WifiModem wModem = null;
 
     public static void main(String[] args) throws InstantiationException, IllegalAccessException, ClassNotFoundException, IOException {
     	
@@ -63,8 +63,8 @@ public class Simulation {
         // Install the modem & turn on the modem
         try {
         	System.out.println("Setting up Wifi Modem");
-        	wModem = WifiModem.getInstance(Building.MAILROOM_LOCATION);
-			System.out.println(wModem.Turnon());
+        	Robot.wModem = WifiModem.getInstance(Building.MAILROOM_LOCATION);
+			System.out.println(Robot.wModem.Turnon());
 		} catch (Exception mException) {
 			mException.printStackTrace();
 		}
@@ -96,7 +96,7 @@ public class Simulation {
             Clock.Tick();
         }
         printResults();
-        System.out.println(wModem.Turnoff());
+        System.out.println(Robot.wModem.Turnoff());
     }
     
     static private Properties setUpProperties() throws IOException {
@@ -106,7 +106,7 @@ public class Simulation {
     	automailProperties.setProperty("Floors", "10");
     	automailProperties.setProperty("Mail_to_Create", "80");
     	automailProperties.setProperty("ChargeThreshold", "0");
-    	automailProperties.setProperty("ChargeDisplay", "false");
+    	automailProperties.setProperty("ChargeDisplay", "true");
     	
     	// Read properties
 		FileReader inStream = null;
@@ -151,7 +151,8 @@ public class Simulation {
     	public void deliver(MailItem deliveryItem){
     		if(!MAIL_DELIVERED.contains(deliveryItem)){
     			MAIL_DELIVERED.add(deliveryItem);
-                System.out.printf("T: %3d > Delivered(%4d) [%s]%n", Clock.Time(), MAIL_DELIVERED.size(), deliveryItem.toString());
+                System.out.printf("T: %3d > Delivered(%4d) [%s]%n",
+						Clock.Time(), MAIL_DELIVERED.size(), deliveryItem.toString(CHARGE_DISPLAY));
     			// Calculate delivery score
     			total_delay += calculateDeliveryDelay(deliveryItem);
     		}
