@@ -59,8 +59,6 @@ public class MailPool {
 		pool.sort(new ItemComparator());
 	}
 	
-	
-	
 	/**
      * load up any waiting robots with mailItems, if any.
      */
@@ -126,4 +124,7 @@ public class MailPool {
 		robots.add(robot);
 	}
 
+	private boolean isPriority(MailItem item) {
+		return item.calculateCharge() > Simulation.getChargeThreshold();
+	}
 }

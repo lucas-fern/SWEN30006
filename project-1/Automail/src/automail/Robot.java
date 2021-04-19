@@ -17,6 +17,7 @@ public class Robot {
     static public final double UNITS_PER_LOOKUP = 0.1;
 
     public static WifiModem wModem = null;
+    private static double[] serviceFees = new double[Building.FLOORS];
 
     IMailDelivery delivery;
     protected final String id;
@@ -37,7 +38,6 @@ public class Robot {
     /**
      * Initiates the robot's location at the start to be at the mailroom
      * also set it to be waiting for mail.
-     * @param behaviour governs selection of mail items for delivery and behaviour on priority arrivals
      * @param delivery governs the final delivery
      * @param mailPool is the source of mail items
      */
@@ -97,7 +97,7 @@ public class Robot {
                     // then use the stored service fee for the item
                     attemptSetServiceFee(destination_floor);
                     deliveryItem.increaseActivityUnitsToDeliver(Robot.UNITS_PER_LOOKUP);
-                    deliveryItem.setServiceFee(Automail.getServiceFee(destination_floor));
+                    deliveryItem.setServiceFee(getFloorServiceFee(destination_floor));
 
                     /* Delivery complete, report this to the simulator! */
                     delivery.deliver(deliveryItem);
@@ -196,13 +196,23 @@ public class Robot {
 	}
 
 	/** Makes an attempt to retrieve and set a new service fee for a floor. Returns positive if successful, else neg. */
-	public int attemptSetServiceFee(int floor) {
+	public static int attemptSetServiceFee(int floor) {
         double newFee = wModem.forwardCallToAPI_LookupPrice(floor);
 
         if (newFee >= 0) {
-            Automail.setServiceFee(floor, newFee);
+            Robot.setFloorServiceFee(floor, newFee);
             return 1;
         }
         return -1;
+    }
+
+    /** Sets a new service fee for a floor */
+    private static void setFloorServiceFee(int floor, double fee) {
+        Robot.serviceFees[floor-1] = fee;  // Sets the floor-1'th element since the array is 0 indexed
+    }
+
+    /** Returns the service fee for a floor */
+    public static double getFloorServiceFee(int floor) {
+        return Robot.serviceFees[floor-1];  // Returns the floor-1'th element since the array is 0 indexed
     }
 }

@@ -68,7 +68,6 @@ public class MailItem {
     }
 
     /**
-     *
      * @return the destination floor of the mail item
      */
     public int getDestFloor() {
@@ -76,7 +75,6 @@ public class MailItem {
     }
     
     /**
-     *
      * @return the ID of the mail item
      */
     public String getId() {
@@ -84,7 +82,6 @@ public class MailItem {
     }
 
     /**
-     *
      * @return the arrival time of the mail item
      */
     public int getArrivalTime(){
@@ -92,12 +89,11 @@ public class MailItem {
     }
 
     /**
-    *
     * @return the weight of the mail item
     */
     public int getWeight(){
        return weight;
-   }
+    }
    
 	static private int count = 0;
 	static private Map<Integer, Integer> hashMap = new TreeMap<Integer, Integer>();
