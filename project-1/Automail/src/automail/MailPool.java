@@ -79,10 +79,11 @@ public class MailPool {
 		ListIterator<Item> j = pool.listIterator();
 		if (pool.size() > 0) {
 			try {
+				// While there are items in the list check for high priority mail 
 				while(j.hasNext()) {
 					Item temp = j.next();
 					// Check for high priority mail to add to hand
-					if(temp.mailItem.calculateCharge() > Simulation.getChargeThreshold()) {
+					if(temp.mailItem.calculateCharge(temp.mailItem.estimateActivityToDeliver()) > Simulation.getChargeThreshold()) {
 						robot.addToHand(temp.mailItem); // hand first as we want higher priority delivered first
 						j.remove();
 						break;
@@ -99,8 +100,8 @@ public class MailPool {
 					while(j.hasNext()) {
 						Item temp = j.next();
 						// Check for high priority mail to add to tube
-						if(temp.mailItem.calculateCharge() > Simulation.getChargeThreshold()) {
-							robot.addToTube(temp.mailItem); // hand first as we want higher priority delivered first
+						if(temp.mailItem.calculateCharge(temp.mailItem.estimateActivityToDeliver()) > Simulation.getChargeThreshold()) {
+							robot.addToTube(temp.mailItem); 
 							j.remove();
 							break;
 						}

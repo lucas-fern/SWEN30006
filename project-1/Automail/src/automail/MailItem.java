@@ -43,7 +43,7 @@ public class MailItem {
     public String toString(boolean displayCharge){
         if (displayCharge) {
             return String.format("Mail Item:: ID: %6s | Arrival: %4d | Destination: %2d | Weight: %4d | Charge: %.2f | Cost: %.2f | Fee: %.2f | Activity: %.2f",
-                    id, arrival_time, destination_floor, weight, calculateCharge(), calculateCost(), serviceFee, calculateTotalActivityUnits());
+                    id, arrival_time, destination_floor, weight, calculateCharge(calculateTotalActivityUnits()), calculateCost(calculateTotalActivityUnits()), serviceFee, calculateTotalActivityUnits());
         } else {
             return String.format("Mail Item:: ID: %6s | Arrival: %4d | Destination: %2d | Weight: %4d",
                     id, arrival_time, destination_floor, weight);
@@ -61,7 +61,7 @@ public class MailItem {
     /** Calculates the total amount of activity units required by a robot to perform a delivery and return to the
      * mail room. Assumes that the robot travels directly back to the mail room after delivering and doesn't
      * discount when robots deliver multiple items. */
-    private double calculateTotalActivityUnits() {
+    public double calculateTotalActivityUnits() {
         double activityUnitsToReturn = (destination_floor - Building.MAILROOM_LOCATION) * Robot.UNITS_PER_FLOOR;
 
         return activityUnitsToDeliver + activityUnitsToReturn;
@@ -126,23 +126,28 @@ public class MailItem {
         this.activityUnitsToDeliver = this.activityUnitsToDeliver + increase;
     }
 
+    /** Setter for the service fee of an item. */
     public void setServiceFee(double serviceFee) {
         this.serviceFee = serviceFee;
     }
 
+    /** Getter for the service fee of an item. */
     public double getServiceFee() {
         return serviceFee;
     }
     
-    public double calculateActivityCost() {
-        return calculateTotalActivityUnits() * Automail.ACTIVITY_PRICE;
+    /** Calculate the activity cost of an item taking in a calculation of activity units. */
+    public double calculateActivityCost(double activityUnits) {
+        return activityUnits * Automail.ACTIVITY_PRICE;
     }
     
-    private double calculateCost() {
-        return serviceFee + calculateActivityCost();
+    /** Calculate the total cost of an item taking in a calculation of activity units. */
+    private double calculateCost(double activityUnits) {
+        return serviceFee + calculateActivityCost(activityUnits);
     }
     
-    public double calculateCharge() {
-    	return calculateCost() * (1 + Automail.MARKUP_PROP);
+    /** Calculate the total charge to deliver an item taking in a calculation of activity units. */
+    public double calculateCharge(double activityUnits ) {
+    	return calculateCost(activityUnits) * (1 + Automail.MARKUP_PROP);
     }
 }
