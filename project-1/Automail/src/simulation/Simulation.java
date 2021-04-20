@@ -163,9 +163,9 @@ public class Simulation {
 						Clock.Time(), MAIL_DELIVERED.size(), deliveryItem.toString(CHARGE_DISPLAY));
                 
                 // Calculate total billable activity
-                billableActivity += deliveryItem.calculateCharge();
+                billableActivity += deliveryItem.calculateCharge(deliveryItem.calculateTotalActivityUnits());
                 //Calculate total activity cost
-                activityCost += deliveryItem.calculateActivityCost();
+                activityCost += deliveryItem.calculateActivityCost(deliveryItem.calculateTotalActivityUnits());
                 //Calculate total service cost
                 serviceCost += deliveryItem.getServiceFee();
     			// Calculate delivery score
@@ -202,6 +202,5 @@ public class Simulation {
     
     public static double getChargeThreshold() {
     	return CHARGE_THRESHOLD;
-    }
-    
+    }  
 }
