@@ -32,7 +32,7 @@ The following attributes were added to the Simulation class:
 \end{itemize}
 
 \section{Automail}
-The Automail constructor was modified to set an initial service fee for each floor. This incurs an upfront cost that cannot be passed on to the consumers, but is justified, as once an initial fee is set for each floor we can guarantee only one extra call will used per delivery since a default value now exists.
+The Automail constructor was modified to set an initial service fee for each floor. This incurs an upfront cost that cannot be passed on to the consumers, but is justified, as once an initial fee is set for each floor we can guarantee only one extra call will be used per delivery since a default value now exists.
 \subsection{Attributes}
 The following attributes were added to the Automail class:
 \begin{itemize}
@@ -72,20 +72,27 @@ The following attributes were added to the MailItem class:
     Each MailItem stores, updates, and operates on its own service fee and required activity units, so these were placed to obey the Information Expert principle and maintain High Cohesion.
 \end{itemize}
 \subsection{Methods}
-The following method was also added to the Robot class:
+The following method was also added to the MailItem class:
 \begin{itemize}
     \item \verb|public static int attemptSetServiceFee(int floor)|\\[2mm]
-    This method interacts with other \verb|static| attributes and methods of the Robot class. It was highly cohesive to place this method here.
+    This method interacts with other \verb|static| attributes and methods of the MailItem class. It was highly cohesive to place this method here.
     \item \verb|public void increaseActivityUnitsToDeliver(double increase)|\\
     +\verb| private double calculateTotalActivityUnits()|\\
-    +\verb| public double calculateActivityCost()|\\
-    +\verb| private double calculateCost()|\\
-    +\verb| public double calculateCharge()|\\[2mm]
-    These methods all operate on and make calculations based on an individual MailItem and its properties such as destination and the activity units required to move it there. It was in line with the Information Expert principle to place these methods in the same class.
+    +\verb| private double estimateActivityToDeliver()|\\
+    +\verb| public double calculateActivityCost(double activityUnits)|\\
+    +\verb| private double calculateCost(double activityUnits)|\\
+    +\verb| public double calculateCharge(double activityUnits)|\\[2mm]
+    These methods all operate on and make calculations based on an individual MailItem and its properties such as destination and the activity units required to move it there. These methods must take acitivtyUnits as there are multiple ways of calculating this value (estimate and actual value) It was in line with the Information Expert principle to place these methods in the same class.
 \end{itemize}
 
 \section{MailPool}
 The \verb|loadItem()| method of the MailPool was modified to support priority dispatch of MailItems with a charge above the threshold defined in the configuration file. By keeping the same interface into the \verb|loadItem()| method, this variation was protected from causing adverse effects elsewhere in the Automail system.
+\subsection{Methods}
+The following method was also added to the MailPool class:
+\begin{itemize}
+    \item \verb|private boolean isPriority(MailItem item)|\\[2mm]
+    This method compares the charge on a mail item to the threshold value for priority mail. It was highly cohesive to place this method here.
+\end{itemize}
 
 \section{Additional Choices}
 \begin{itemize}
