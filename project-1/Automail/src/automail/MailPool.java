@@ -81,7 +81,7 @@ public class MailPool {
 				while(j.hasNext()) {
 					Item temp = j.next();
 					// Check for high priority mail to add to hand
-					if(temp.mailItem.calculateCharge(temp.mailItem.estimateActivityToDeliver()) > Simulation.getChargeThreshold()) {
+					if(isPriority(temp.mailItem)) {
 						robot.addToHand(temp.mailItem); // hand first as we want higher priority delivered first
 						j.remove();
 						break;
@@ -98,7 +98,7 @@ public class MailPool {
 					while(j.hasNext()) {
 						Item temp = j.next();
 						// Check for high priority mail to add to tube
-						if(temp.mailItem.calculateCharge(temp.mailItem.estimateActivityToDeliver()) > Simulation.getChargeThreshold()) {
+						if(isPriority(temp.mailItem)) {
 							robot.addToTube(temp.mailItem); 
 							j.remove();
 							break;
@@ -126,6 +126,6 @@ public class MailPool {
 	}
 
 	private boolean isPriority(MailItem item) {
-		return item.calculateCharge() > Simulation.getChargeThreshold();
+		return item.calculateCharge(item.estimateActivityToDeliver()) > Simulation.getChargeThreshold();
 	}
 }
