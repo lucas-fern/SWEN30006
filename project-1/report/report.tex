@@ -4,6 +4,7 @@
 \usepackage{color, soul}
 \usepackage{titlesec}
 \usepackage{enumitem}
+\usepackage{pdfpages}
 
 \setitemize{itemsep=0mm}
 
@@ -95,4 +96,5 @@ The following method was also added to the MailPool class:
     \item It was decided that customers would be charged an amount proportional to the amount of floors that the robot travelled with their item, and if the robot was carrying multiple items both customers would be charged for each movement. This is because in a real life environment customers would feel ripped-off if they usually received a 50\% discount from the robot delivering two items at once, and then occasionally were charged the full price when the robot was forced to make a trip with only one item. On top of that, providing no discount is profitable for Delivering Solutions Inc.
 \end{itemize}
 
+\includepdf[pages=-, fitpaper=true]{design-class-diag.pdf}
 \end{document}
