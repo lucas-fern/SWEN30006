@@ -19,7 +19,7 @@
 
 \begin{document}
 \maketitle
-\noindent Implementing the required changes to the Automail system did not require the creation of any new classes in any of the existing \verb|automail|, \verb|exceptions|, or \verb|simulation| packages. Various attributes and methods were, however, added to the existing classes, and existing classes were modified. These additions will be detailed below, broken down by class. They are also highlighted in \hl{yellow} on the Design Class Diagram \hl{attached at the end of the report.}
+\noindent Implementing the required changes to the Automail system did not require the creation of any new classes in any of the existing \verb|automail|, \verb|exceptions|, or \verb|simulation| packages. Various attributes and methods were, however, added to the existing classes, and existing classes were modified. These additions will be detailed below, broken down by class. They are also highlighted in \hl{yellow} on the Design Class Diagram attached at the end of the report.
 
 \section{Simulation}
 The \verb|WifiModem| was moved out of the simulation class and into the Robot. This requires the Simulation class to import the Robot, but this slight increase in Coupling is easily justified by the significant increase in Cohesion. This is mentioned again in Section \ref{sec: robot attrs}. 
