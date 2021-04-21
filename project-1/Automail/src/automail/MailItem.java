@@ -11,6 +11,8 @@ import java.util.TreeMap;
  * Represents a mail item
  */
 public class MailItem {
+    public static final double ACTIVITY_PRICE = 0.224;
+    public static final double MARKUP_PROP = 0.059;
 
     /** Represents the destination floor to which the mail is intended to go */
     protected final int destination_floor;
@@ -134,7 +136,7 @@ public class MailItem {
     
     /** Calculate the activity cost of an item taking in a calculation of activity units. */
     public double calculateActivityCost(double activityUnits) {
-        return activityUnits * Automail.ACTIVITY_PRICE;
+        return activityUnits * ACTIVITY_PRICE;
     }
     
     /** Calculate the total cost of an item taking in a calculation of activity units. */
@@ -144,6 +146,6 @@ public class MailItem {
     
     /** Calculate the total charge to deliver an item taking in a calculation of activity units. */
     public double calculateCharge(double activityUnits ) {
-    	return calculateCost(activityUnits) * (1 + Automail.MARKUP_PROP);
+    	return calculateCost(activityUnits) * (1 + MARKUP_PROP);
     }
 }

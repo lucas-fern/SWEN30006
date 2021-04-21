@@ -33,13 +33,6 @@ The following attributes were added to the Simulation class:
 
 \section{Automail}
 The Automail constructor was modified to set an initial service fee for each floor. This incurs an upfront cost that cannot be passed on to the consumers, but is justified, as once an initial fee is set for each floor we can guarantee only one extra call will be used per delivery since a default value now exists.
-\subsection{Attributes}
-The following attributes were added to the Automail class:
-\begin{itemize}
-    \item \verb|public static final double ACTIVITY_PRICE = 0.224;|\\
-         +\verb| public static final double MARKUP_PROP = 0.059;|\\[2mm]
-    The mark-up proportion and activity price are used in the calculation of charges upon successful deliveries, as well as in charge estimation for determining priority items. As a general configuration options these was assigned to the Automail class. From here it can be accessed for calculations and easily changed in future modifications.
-\end{itemize}
 
 \section{Robot}
 The \verb|operate()| method of the Robot class was modified so that the Robot would attempt to update the service fee of the floor whenever it was completing a delivery. The \verb|moveTowards()| method was also updated so that it added the cost of each movement to the relevant variables of its MailItems.
@@ -70,6 +63,9 @@ The following attributes were added to the MailItem class:
     \item \verb|private double serviceFee|\\
          +\verb| private double activityUnitsToDeliver|\\[2mm]
     Each MailItem stores, updates, and operates on its own service fee and required activity units, so these were placed to obey the Information Expert principle and maintain High Cohesion.
+    \item \verb|public static final double ACTIVITY_PRICE = 0.224;|\\
+    +\verb| public static final double MARKUP_PROP = 0.059;|\\[2mm]
+    These attributes are used in the calculation of charges upon successful deliveries, as well as in charge estimation for determining priority items. These calculations are performed by the MailItem, so it was highly cohesive to store the constants here.
 \end{itemize}
 \subsection{Methods}
 The following method was also added to the MailItem class:
