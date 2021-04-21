@@ -65,7 +65,7 @@ The following attributes were added to the MailItem class:
     Each MailItem stores, updates, and operates on its own service fee and required activity units, so these were placed to obey the Information Expert principle and maintain High Cohesion.
     \item \verb|public static final double ACTIVITY_PRICE = 0.224;|\\
     +\verb| public static final double MARKUP_PROP = 0.059;|\\[2mm]
-    These attributes are used in the calculation of charges upon successful deliveries, as well as in charge estimation for determining priority items. These calculations are performed by the MailItem, so it was highly cohesive to store the constants here.
+    These attributes are used in the calculation of charges upon successful deliveries, as well as in charge estimation for determining priority items. These calculations are performed by the MailItem, so it was highly cohesive to store the constants here. It was also mentioned that the system should be designed so that the weight of the items could be factored into the charge in the future. Since the weight is stored here also, this decision takes into account the cohesion of future updates.
 \end{itemize}
 \subsection{Methods}
 The following method was also added to the MailItem class:
