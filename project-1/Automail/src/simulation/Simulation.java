@@ -194,10 +194,12 @@ public class Simulation {
         System.out.println("T: "+Clock.Time()+" | Simulation complete!");
         System.out.println("Final Delivery time: "+Clock.Time());
         System.out.printf("Delay: %.2f%n", total_delay);
-        System.out.println("Total Items: " + MAIL_DELIVERED.size());
-        System.out.printf("Total Billable Activity: %.2f%n", billableActivity);
-        System.out.printf("Total Activity Cost: %.2f%n", activityCost);
-        System.out.printf("Total Service Cost: %.2f%n", serviceCost);
+        if(CHARGE_DISPLAY){
+            System.out.println("Total Items: " + MAIL_DELIVERED.size());
+            System.out.printf("Total Billable Activity: %.2f%n", billableActivity);
+            System.out.printf("Total Activity Cost: %.2f%n", activityCost);
+            System.out.printf("Total Service Cost: %.2f%n", serviceCost);
+        }
     }
     
     public static double getChargeThreshold() {
