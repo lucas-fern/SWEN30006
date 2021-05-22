@@ -1,0 +1,1 @@
+To run the project you need to add `JGameGrid.jar` to the build path. In IntelliJ this is done in `File > Project Structure > Dependencies` then "Add JAR's or Directories" and add it there.
