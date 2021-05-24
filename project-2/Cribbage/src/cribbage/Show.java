@@ -17,6 +17,6 @@ public class Show extends CribbageEvent {
 
     @Override
     public String toString() {
-        return super.eventId + "," + playerId + "," + starter + "+" + hand;
+        return super.eventId + "," + playerId + "," + Cribbage.canonical(starter) + "+" + Cribbage.canonical(hand);
     }
 }

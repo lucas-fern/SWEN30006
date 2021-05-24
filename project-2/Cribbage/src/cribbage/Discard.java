@@ -14,6 +14,6 @@ public class Discard extends CribbageEvent {
 
     @Override
     public String toString() {
-        return super.eventId + "," + playerId + "," + discards;
+        return super.eventId + "," + playerId + "," + Cribbage.canonical(discards);
     }
 }

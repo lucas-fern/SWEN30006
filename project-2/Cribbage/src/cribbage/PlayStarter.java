@@ -12,6 +12,6 @@ public class PlayStarter extends CribbageEvent {
 
     @Override
     public String toString() {
-        return super.eventId + "," + starter;
+        return super.eventId + "," + Cribbage.canonical(starter);
     }
 }

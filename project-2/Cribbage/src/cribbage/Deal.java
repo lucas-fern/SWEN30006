@@ -14,6 +14,6 @@ public class Deal extends CribbageEvent {
 
     @Override
     public String toString() {
-        return super.eventId + "," + playerId + "," + hand;
+        return super.eventId + "," + playerId + "," + Cribbage.canonical(hand);
     }
 }

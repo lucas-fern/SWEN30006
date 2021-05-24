@@ -16,6 +16,6 @@ public class Play extends CribbageEvent {
 
     @Override
     public String toString() {
-        return super.eventId + "," + playerId + "," + totalPoints + "," + playedCard;
+        return super.eventId + "," + playerId + "," + totalPoints + "," + Cribbage.canonical(playedCard);
     }
 }

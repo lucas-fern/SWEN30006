@@ -40,11 +40,14 @@ public class Cribbage extends CardGame {
     /*
     Canonical String representations of Suit, Rank, Card, and Hand
     */
-    String canonical(Suit s) {
+    // TODO: report on the fact that I made all these canonical methods static so they could be used outside
+    // (involved making Cribbage.deck static)
+    // TODO: potentially extract this behaviour to a new CardFormatHandler class?
+    static String canonical(Suit s) {
         return s.toString().substring(0, 1);
     }
 
-    String canonical(Rank r) {
+    static String canonical(Rank r) {
         switch (r) {
             case ACE:
             case KING:
@@ -57,18 +60,18 @@ public class Cribbage extends CardGame {
         }
     }
 
-    String canonical(Card c) {
+    static String canonical(Card c) {
         return canonical((Rank) c.getRank()) + canonical((Suit) c.getSuit());
     }
 
-    String canonical(Hand h) {
+    static String canonical(Hand h) {
         Hand h1 = new Hand(deck); // Clone to sort without changing the original hand
         for (Card C : h.getCardList()) h1.insert(C.getSuit(), C.getRank(), false);
         h1.sort(Hand.SortType.POINTPRIORITY, false);
-        return "[" + h1.getCardList().stream().map(this::canonical).collect(Collectors.joining(",")) + "]";
+        return "[" + h1.getCardList().stream().map(Cribbage::canonical).collect(Collectors.joining(",")) + "]";
     }
 
-    class MyCardValues implements Deck.CardValues { // Need to generate a unique value for every card
+    static class MyCardValues implements Deck.CardValues { // Need to generate a unique value for every card
         public int[] values(Enum suit) {  // Returns the value for each card in the suit
             return Stream.of(Rank.values()).mapToInt(r -> (((Rank) r).order - 1) * (Suit.values().length) + suit.ordinal()).toArray();
         }
@@ -116,7 +119,7 @@ public class Cribbage extends CardGame {
     private final int handWidth = 400;
     private final int cribWidth = 150;
     private final int segmentWidth = 180;
-    private final Deck deck = new Deck(Suit.values(), Rank.values(), "cover", new MyCardValues());
+    private static final Deck deck = new Deck(Suit.values(), Rank.values(), "cover", new MyCardValues());
     private final Location[] handLocations = {
             new Location(360, 75),
             new Location(360, 625)
