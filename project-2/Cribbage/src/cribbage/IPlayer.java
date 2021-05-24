@@ -30,4 +30,9 @@ public abstract class IPlayer {
             hand.insert(unlayable, true);
             return s;
     }
+
+    @Override
+    public String toString() {
+        return "P" + id;
+    }
 }
