@@ -13,7 +13,7 @@ public class CribbageLogger implements CribbageObserver {
 
     private CribbageLogger() {
         try {
-            this.bw = new BufferedWriter(new FileWriter("cribbage.txt", false));
+            this.bw = new BufferedWriter(new FileWriter("cribbage.log", false));
         } catch (IOException e) {
             e.printStackTrace();
         }
