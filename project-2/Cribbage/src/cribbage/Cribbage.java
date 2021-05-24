@@ -164,6 +164,11 @@ public class Cribbage extends CardGame {
         addActor(scoreActors[player], scoreLocations[player]);
     }
 
+    /**
+     * Deal cards to the players and assign them a player number.
+     * @param pack The full deck of cards
+     * @param hands The hands of the players to populate
+     */
     private void deal(Hand pack, Hand[] hands) {
         for (int i = 0; i < nPlayers; i++) {
             hands[i] = new Hand(deck);
@@ -171,9 +176,10 @@ public class Cribbage extends CardGame {
             players[i].setId(i);
             players[i].startSegment(deck, hands[i]);
 
-            // Notify observers that cards have been dealt
-            notifyObservers(new Deal(players[i].toString(), hands[i]));
+            // Notify observers that player numbers have been assigned.
+            notifyObservers(new InitPlayer(players[i].getClass().getName(), players[i].toString()));
         }
+
         RowLayout[] layouts = new RowLayout[nPlayers];
         for (int i = 0; i < nPlayers; i++) {
             layouts[i] = new RowLayout(handLocations[i], handWidth);
@@ -187,6 +193,9 @@ public class Cribbage extends CardGame {
         dealingOut(pack, hands);
         for (int i = 0; i < nPlayers; i++) {
             hands[i].sort(Hand.SortType.POINTPRIORITY, true);
+
+            // Notify observers that the deal has been performed.
+            notifyObservers(new Deal(players[i].toString(), hands[i]));
         }
         layouts[0].setStepDelay(0);
     }
@@ -222,6 +231,9 @@ public class Cribbage extends CardGame {
         Card dealt = randomCard(pack);
         dealt.setVerso(false);
         transfer(dealt, starter);
+
+        // notify observers that the starter card has been picked
+        notifyObservers(new PlayStarter(dealt));
     }
 
     int total(Hand hand) {
@@ -268,6 +280,10 @@ public class Cribbage extends CardGame {
             } else {
                 s.lastPlayer = currentPlayer; // last Player to play a card in this segment
                 transfer(nextCard, s.segment);
+
+                // Notify observers that a card has been played into the segment
+                notifyObservers(new Play(players[currentPlayer].toString(), total(s.segment), nextCard));
+
                 if (total(s.segment) == thirtyone) {
                     // lastPlayer gets 2 points for a 31
                     s.newSegment = true;
@@ -287,9 +303,11 @@ public class Cribbage extends CardGame {
     }
 
     void showHandsCrib() {
+        // TODO:
         // score player 0 (non dealer)
         // score player 1 (dealer)
         // score crib (for dealer)
+        // notify observers of each show
     }
 
     private static ArrayList<CribbageObserver> observers = new ArrayList<>();
@@ -342,6 +360,9 @@ public class Cribbage extends CardGame {
     public static void main(String[] args)
             throws IOException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException,
             InstantiationException, IllegalAccessException {
+        // Start and register the CribbageLogger TODO: also start the Scorer
+        registerObserver(CribbageLogger.getInstance());
+
         /* Handle Properties */
         // System.out.println("Working Directory = " + System.getProperty("user.dir"));
         Properties cribbageProperties = new Properties();
@@ -370,19 +391,22 @@ public class Cribbage extends CardGame {
                 SEED = new Random().nextInt(); // so randomise
             }
         }
+
+        // Notify observers that the seed has been set
+        notifyObservers(new SetSeed(SEED));
+
         random = new Random(SEED);
 
         // Control Player Types
-        // Initialise and notify observers of P0 creation
+        // Initialise P0
         Class<?> clazz;
         clazz = Class.forName(cribbageProperties.getProperty("Player0"));
         players[0] = (IPlayer) clazz.getConstructor().newInstance();
-        notifyObservers(new InitPlayer(cribbageProperties.getProperty("Player0"), players[0].toString()));
 
-        // Initialise and notify observers of P1 creation
+        // Initialise P1
         clazz = Class.forName(cribbageProperties.getProperty("Player1"));
         players[1] = (IPlayer) clazz.getConstructor().newInstance();
-        notifyObservers(new InitPlayer(cribbageProperties.getProperty("Player1"), players[1].toString()));
+
         // End properties
 
         new Cribbage();

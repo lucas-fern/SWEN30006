@@ -9,4 +9,9 @@ public class PlayStarter extends CribbageEvent {
         super("starter");
         this.starter = starter;
     }
+
+    @Override
+    public String toString() {
+        return super.eventId + "," + starter;
+    }
 }

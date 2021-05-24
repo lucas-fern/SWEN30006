@@ -14,4 +14,9 @@ public class Show extends CribbageEvent {
         this.starter = starter;
         this.hand = hand;
     }
+
+    @Override
+    public String toString() {
+        return super.eventId + "," + playerId + "," + starter + "+" + hand;
+    }
 }

@@ -13,4 +13,9 @@ public class Play extends CribbageEvent {
         this.totalPoints = totalPoints;
         this.playedCard = playedCard;
     }
+
+    @Override
+    public String toString() {
+        return super.eventId + "," + playerId + "," + totalPoints + "," + playedCard;
+    }
 }

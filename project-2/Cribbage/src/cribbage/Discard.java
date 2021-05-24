@@ -11,4 +11,9 @@ public class Discard extends CribbageEvent {
         this.playerId = playerId;
         this.discards = discards;
     }
+
+    @Override
+    public String toString() {
+        return super.eventId + "," + playerId + "," + discards;
+    }
 }

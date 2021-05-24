@@ -7,4 +7,9 @@ public class InitPlayer extends CribbageEvent {
         super(playerType);
         this.playerId = playerId;
     }
+
+    @Override
+    public String toString() {
+        return super.eventId + "," + playerId;
+    }
 }

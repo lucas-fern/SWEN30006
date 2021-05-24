@@ -7,4 +7,9 @@ public class SetSeed extends CribbageEvent {
         super("seed");
         this.seed = seed;
     }
+
+    @Override
+    public String toString() {
+        return super.eventId + "," + seed;
+    }
 }

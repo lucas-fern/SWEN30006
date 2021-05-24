@@ -11,4 +11,9 @@ public class Deal extends CribbageEvent {
         this.playerId = playerId;
         this.hand = hand;
     }
+
+    @Override
+    public String toString() {
+        return super.eventId + "," + playerId + "," + hand;
+    }
 }
