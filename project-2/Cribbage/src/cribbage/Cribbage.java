@@ -274,6 +274,7 @@ public class Cribbage extends CardGame {
                 if (s.go) {
                     // Another "go" after previous one with no intervening cards
                     // lastPlayer gets 1 point for a "go"
+                    notifyObservers(new Go((currentPlayer + 1) % 2));
                     s.newSegment = true;
                 } else {
                     // currentPlayer says "go"
@@ -289,6 +290,7 @@ public class Cribbage extends CardGame {
 
                 if (total(s.segment) == thirtyone) {
                     // lastPlayer gets 2 points for a 31
+                    CribbageScorer.playHistory.removeAll(true);
                     s.newSegment = true;
                     currentPlayer = (currentPlayer + 1) % 2;
                 } else {
@@ -303,6 +305,7 @@ public class Cribbage extends CardGame {
                 s.reset(segments);
             }
         }
+        notifyObservers(new Go(s.lastPlayer));
     }
 
     void showHandsCrib() {
@@ -312,6 +315,7 @@ public class Cribbage extends CardGame {
         // score player 1 (dealer)
         notifyObservers(new Show(players[1].toString(), starter.getLast(), CribbageScorer.playerHands[1], 1));
         // score crib (for dealer)
+        notifyObservers(new Show(players[1].toString(), starter.getLast(), crib, 1));
         // notify observers of each show
     }
 
