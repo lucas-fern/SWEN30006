@@ -23,7 +23,10 @@ public class Score extends CribbageEvent {
 
     @Override
     public String toString() {
-        return super.eventId + "," + playerId + "," + totalScore + "," + thisScore + "," + scoreType + "," +
+        if (scoreCards == null)
+            return super.eventId + "," + playerId + "," + totalScore + "," + thisScore + "," + scoreType;
+        else
+            return super.eventId + "," + playerId + "," + totalScore + "," + thisScore + "," + scoreType + "," +
                 Cribbage.canonical(scoreCards);
     }
 }

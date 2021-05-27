@@ -285,7 +285,7 @@ public class Cribbage extends CardGame {
                 transfer(nextCard, s.segment);
 
                 // Notify observers that a card has been played into the segment
-                notifyObservers(new Play(players[currentPlayer].toString(), total(s.segment), nextCard));
+                notifyObservers(new Play(players[currentPlayer].toString(), total(s.segment), nextCard, currentPlayer));
 
                 if (total(s.segment) == thirtyone) {
                     // lastPlayer gets 2 points for a 31
@@ -308,7 +308,9 @@ public class Cribbage extends CardGame {
     void showHandsCrib() {
         // TODO:
         // score player 0 (non dealer)
+        notifyObservers(new Show(players[0].toString(), starter.getLast(), CribbageScorer.playerHands[0], 0));
         // score player 1 (dealer)
+        notifyObservers(new Show(players[1].toString(), starter.getLast(), CribbageScorer.playerHands[1], 1));
         // score crib (for dealer)
         // notify observers of each show
     }
@@ -327,7 +329,8 @@ public class Cribbage extends CardGame {
      * Notify CribbageObservers of a new CribbageEvent
      * @param event The event which has taken place.
      */
-    private static void notifyObservers(CribbageEvent event) {
+    // TODO: report that this has been changed to public function
+    public static void notifyObservers(CribbageEvent event) {
         for (CribbageObserver obs: observers) {
             obs.update(event);
         }
@@ -363,8 +366,9 @@ public class Cribbage extends CardGame {
     public static void main(String[] args)
             throws IOException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException,
             InstantiationException, IllegalAccessException {
-        // Start and register the CribbageLogger TODO: also start the Scorer
+        // Start and register the CribbageLogger
         registerObserver(CribbageLogger.getInstance());
+        registerObserver(CribbageScorer.getInstance(deck));
 
         /* Handle Properties */
         // System.out.println("Working Directory = " + System.getProperty("user.dir"));
