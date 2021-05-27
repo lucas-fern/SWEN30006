@@ -148,7 +148,8 @@ public class Cribbage extends CardGame {
     }
 
     static private final IPlayer[] players = new IPlayer[nPlayers];
-    private final int[] scores = new int[nPlayers];
+    //TODO changed from final in report
+    private int[] scores = new int[nPlayers];
 
     final Font normalFont = new Font("Serif", Font.BOLD, 24);
     final Font bigFont = new Font("Serif", Font.BOLD, 36);
@@ -304,6 +305,9 @@ public class Cribbage extends CardGame {
                 segments.add(s.segment);
                 s.reset(segments);
             }
+            scores = CribbageScorer.playerScores;
+            updateScore(0);
+            updateScore(1);
         }
         notifyObservers(new Go(s.lastPlayer));
     }
@@ -312,10 +316,19 @@ public class Cribbage extends CardGame {
         // TODO:
         // score player 0 (non dealer)
         notifyObservers(new Show(players[0].toString(), starter.getLast(), CribbageScorer.playerHands[0], 0));
+        scores = CribbageScorer.playerScores;
+        updateScore(0);
+        updateScore(1);
         // score player 1 (dealer)
         notifyObservers(new Show(players[1].toString(), starter.getLast(), CribbageScorer.playerHands[1], 1));
+        scores = CribbageScorer.playerScores;
+        updateScore(0);
+        updateScore(1);
         // score crib (for dealer)
         notifyObservers(new Show(players[1].toString(), starter.getLast(), crib, 1));
+        scores = CribbageScorer.playerScores;
+        updateScore(0);
+        updateScore(1);
         // notify observers of each show
     }
 
