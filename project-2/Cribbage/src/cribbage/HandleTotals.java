@@ -86,7 +86,6 @@ public class HandleTotals implements ScoringEvent{
         allHands.add(cardSet);
 
         Collections.sort(allHands, new SortByCanonical());
-        for (Hand hand : allHands) System.out.println(hand.toString() + "\n");
 
         for (Hand hand : allHands){
             int score = 0;
