@@ -12,11 +12,13 @@ public class HandleRuns implements ScoringEvent {
 
     private static Deck deck;
     private static HandleRuns singletonInstance;
+    private static CribbageLogger logger;
 
     private static final int LONGEST_RUN = 7;
     private static final int SHORTEST_RUN = 3;
 
     private HandleRuns(Deck deck){
+        logger = CribbageLogger.getInstance();
         this.deck = deck;
     }
 
@@ -61,10 +63,10 @@ public class HandleRuns implements ScoringEvent {
     private int run_of_size(Hand cardsToSearch, int runLength, boolean displayCards, int playerScore, int playerNum){
         for (Hand hand : cardsToSearch.extractSequences(runLength)){
             if (displayCards) {
-                Cribbage.notifyObservers(new Score("P" + playerNum, playerScore + runLength, runLength, null, "run" + runLength, hand));
+                logger.log(new Score("P" + playerNum, playerScore + runLength, runLength, null, "run" + runLength, hand));
             }
             else
-                Cribbage.notifyObservers(new Score("P" + playerNum, playerScore+runLength, runLength, null, "run" + runLength, null));
+                logger.log(new Score("P" + playerNum, playerScore+runLength, runLength, null, "run" + runLength, null));
             playerScore += runLength;
         }
         return playerScore;

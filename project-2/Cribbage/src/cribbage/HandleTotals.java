@@ -8,10 +8,12 @@ public class HandleTotals implements ScoringEvent{
 
     private static Deck deck;
     private static HandleTotals singletonInstance;
+    private static CribbageLogger logger;
     private static final int POINTS_FOR_TOTALS = 2;
 
 
     private HandleTotals(Deck deck){
+        logger = CribbageLogger.getInstance();
         this.deck = deck;
     }
 
@@ -34,7 +36,7 @@ public class HandleTotals implements ScoringEvent{
                 number = "fifteen";
             else
                 number = "thirtyone";
-            Cribbage.notifyObservers(new Score("P" + playerNum, playerScore + POINTS_FOR_TOTALS, POINTS_FOR_TOTALS, null, number, null));
+            logger.log(new Score("P" + playerNum, playerScore + POINTS_FOR_TOTALS, POINTS_FOR_TOTALS, null, number, null));
             playerScore += POINTS_FOR_TOTALS;
         }
         return playerScore;

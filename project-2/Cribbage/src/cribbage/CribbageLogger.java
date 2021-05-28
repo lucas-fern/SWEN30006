@@ -29,6 +29,10 @@ public class CribbageLogger implements CribbageObserver {
 
     @Override
     public void update(CribbageEvent event) {
+        log(event);
+    }
+
+    public void log(CribbageEvent event) {
         try {
             bw.write(event.toString());
             bw.newLine();

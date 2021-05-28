@@ -10,12 +10,14 @@ public class HandlePairs implements ScoringEvent{
 
     private static Deck deck;
     private static HandlePairs singletonInstance;
+    private static CribbageLogger logger;
 
     private static final int PAIR_SCORE = 2;
     private static final int TRIP_SCORE = 6;
     private static final int QUAD_SCORE = 12;
 
     private HandlePairs(Deck deck){
+        logger = CribbageLogger.getInstance();
         this.deck = deck;
     }
 
@@ -59,9 +61,9 @@ public class HandlePairs implements ScoringEvent{
     private int scorePairs(Hand cardsToSearch, boolean displayCards, int playerScore, int playerNum){
         for (Hand hand : cardsToSearch.extractPairs()){
             if (displayCards)
-                Cribbage.notifyObservers(new Score("P" + playerNum, playerScore + PAIR_SCORE, PAIR_SCORE, null, "pair2", hand));
+                logger.log(new Score("P" + playerNum, playerScore + PAIR_SCORE, PAIR_SCORE, null, "pair2", hand));
             else
-                Cribbage.notifyObservers(new Score("P" + playerNum, playerScore + PAIR_SCORE, PAIR_SCORE, null, "pair2", null));
+                logger.log(new Score("P" + playerNum, playerScore + PAIR_SCORE, PAIR_SCORE, null, "pair2", null));
             playerScore += PAIR_SCORE;
         }
         return playerScore;
@@ -70,9 +72,9 @@ public class HandlePairs implements ScoringEvent{
     private int scoreTrips(Hand cardsToSearch, boolean displayCards, int playerScore, int playerNum){
         for (Hand hand : cardsToSearch.extractTrips()){
             if (displayCards)
-                Cribbage.notifyObservers(new Score("P" + playerNum, playerScore + TRIP_SCORE, TRIP_SCORE, null, "pair3", hand));
+                logger.log(new Score("P" + playerNum, playerScore + TRIP_SCORE, TRIP_SCORE, null, "pair3", hand));
             else
-                Cribbage.notifyObservers(new Score("P" + playerNum, playerScore + TRIP_SCORE, TRIP_SCORE, null, "pair3", null));
+                logger.log(new Score("P" + playerNum, playerScore + TRIP_SCORE, TRIP_SCORE, null, "pair3", null));
             playerScore += TRIP_SCORE;
         }
         return playerScore;
@@ -81,9 +83,9 @@ public class HandlePairs implements ScoringEvent{
     private int scoreQuads(Hand cardsToSearch, boolean displayCards, int playerScore, int playerNum){
         for (Hand hand : cardsToSearch.extractQuads()){
             if (displayCards)
-                Cribbage.notifyObservers(new Score("P" + playerNum, playerScore + QUAD_SCORE, QUAD_SCORE, null, "pair4", hand));
+                logger.log(new Score("P" + playerNum, playerScore + QUAD_SCORE, QUAD_SCORE, null, "pair4", hand));
             else
-                Cribbage.notifyObservers(new Score("P" + playerNum, playerScore + QUAD_SCORE, QUAD_SCORE, null, "pair4", null));
+                logger.log(new Score("P" + playerNum, playerScore + QUAD_SCORE, QUAD_SCORE, null, "pair4", null));
             playerScore += QUAD_SCORE;
         }
         return playerScore;

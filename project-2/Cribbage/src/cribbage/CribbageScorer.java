@@ -68,7 +68,7 @@ public class CribbageScorer implements CribbageObserver{
                 break;
             case "go":
                 playerScores[((Go) event).playerNum] += 1;
-                Cribbage.notifyObservers(new Score("P" + ((Go) event).playerNum, playerScores[((Go) event).playerNum], 1, null, "go", null));
+                CribbageLogger.getInstance().log(new Score("P" + ((Go) event).playerNum, playerScores[((Go) event).playerNum], 1, null, "go", null));
                 break;
         }
     }
