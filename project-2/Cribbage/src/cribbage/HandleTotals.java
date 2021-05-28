@@ -5,6 +5,8 @@ import ch.aplu.jcardgame.Deck;
 import ch.aplu.jcardgame.Hand;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class HandleTotals implements ScoringEvent{
 
@@ -64,7 +66,8 @@ public class HandleTotals implements ScoringEvent{
                     _a.insert(_b.getCard(second_card.getCardNumber()).clone(), false);
                     _b.remove(_b.getCard(first_card.getCardNumber()), false);
                     _b.remove(_b.getCard(second_card.getCardNumber()), false);
-
+                    _a.sort(Hand.SortType.POINTPRIORITY, false);
+                    _b.sort(Hand.SortType.POINTPRIORITY, false);
                     pairs.add(_a);
                     triples.add(_b);
                 }
@@ -81,6 +84,9 @@ public class HandleTotals implements ScoringEvent{
         for(int i = triples.size()-1; i >=0; i--) allHands.add(triples.get(i));
         allHands.addAll(quads);
         allHands.add(cardSet);
+
+        Collections.sort(allHands, new SortByCanonical());
+        for (Hand hand : allHands) System.out.println(hand.toString() + "\n");
 
         for (Hand hand : allHands){
             int score = 0;
