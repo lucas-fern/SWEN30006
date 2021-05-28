@@ -54,6 +54,23 @@ Each of these events also overrides the default \verb|toString()| method. Their 
 Subscribers are classes which implement the \verb|CribbageObserver| interface and register with the \verb|Cribbage| class to be notified of game events. Their creation and registration is done inside the \verb|Cribbage| class since currently the only subscribers are the Logger and Scorer, \hl{which was not complex enough to justify their creation in an external factory.}
 \subsubsection{Cribbage Scorer}
 \label{sec: crib scorer}
+The \verb|CribbageScorer| class, is cohesively responsible for handling all scoring events in the Cribbage game. \verb|CribbageScorer| subscribes to the \verb|Cribbage| class and its \verb|update()| method is called whenever an event (defined in Section \ref{sec: crib events}) occurs.\\[2mm]
+
+On creation of the \verb|CribbageScorer|, any method of scoring must subscribe to the \verb|CribbageScorer|, imilar to the \verb|CribbageObserver| interface. These methods all implement the \verb|ScoringEvent| interface with the 2 methods:
+\begin{figure}[H]
+\centering
+\begin{BVerbatim}
+int scoreForPlay(Hand cardSet, int playerScore, int playerNum);
+int scoreForShow(Hand cardSet, int playerScore, int playerNum);
+\end{BVerbatim}
+\end{figure}
+
+This allows for simple extensibility as any new method of scoring must only subscribe to the \verb|CribbageScorer| class and implement the \verb|ScoringEvent| interface.\\[2mm]
+
+The distinction between the two methods \verb|int scoreForPlay()| and \verb|int scoreForShow()| allows for variations in scoring to be easily implemented. For example, if a variation did not include flushes then this would be implemented by not subscribing the \verb|HandleFlushes| class to \verb|CribbageScorer|, or if a variation were not to include runs in the \verb|show| phase of the game, then \verb|int scoreForShow()| in the \verb|Handleruns| class could simply return the \verb|playerScore| that was passed in.\\[2mm]
+
+
+On notification of any event, the cribbage scorer determines any cards that need to be stored as having been played, and notifies scorers to determine if a scoring situation has occurred.
 \subsubsection{Cribbage Logger}
 \label{sec: crib logger}
 The \verb|CribbageLogger| class \hl{[singleton?]}, which appears in the bottom left of the class diagram, is cohesively responsible for all of the logging functionality of the game. As a subscriber to the \verb|Cribbage| class, the logger's \verb|update()| method is called whenever an event (defined in Section \ref{sec: crib events}) occurs. The event is passed through to the class in this method call.\\[2mm]
