@@ -37,9 +37,11 @@ public class CribbageScorer implements CribbageObserver{
         playerHands = new Hand[]{new Hand(deck), new Hand(deck)};
 
         // Register the scorers to be used for the game
+        registerScorer(HandleTotals.getInstance(deck));
+        registerScorer(HandleFlushes.getInstance());
         registerScorer(HandlePairs.getInstance(deck));
         registerScorer(HandleRuns.getInstance(deck));
-        registerScorer(HandleTotals.getInstance(deck));
+        registerScorer(HandleStarters.getInstance(deck));
     }
 
     public static CribbageScorer getInstance(Deck deck) {
@@ -52,24 +54,24 @@ public class CribbageScorer implements CribbageObserver{
 
     @Override
     public void update(CribbageEvent event) {
+        // If event is an instance of "Play" add it to the hand history
         switch (event.eventId) {
-            case "starter":
+            case "starter" -> {
                 playerHands[0].insert(((PlayStarter) event).starter, false);
                 playerHands[1].insert(((PlayStarter) event).starter, false);
-                break;
-            // If event is an instance of "Play" add it to the hand history
-            case "play":
+                notifyScorers(1, playerHands[0], false);
+            }
+            case "play" -> {
                 playHistory.insert(((Play) event).playedCard, false);
                 playerHands[((Play) event).playerNum].insert(((Play) event).playedCard, false);
                 notifyScorers(((Play) event).playerNum, playHistory, false);
-                break;
-            case "show":
-                notifyScorers(((Show) event).playerNum, ((Show) event).hand, true);
-                break;
-            case "go":
-                playerScores[((Go) event).playerNum] += 1;
-                CribbageLogger.getInstance().log(new Score("P" + ((Go) event).playerNum, playerScores[((Go) event).playerNum], 1, null, "go", null));
-                break;
+            }
+            case "show" -> notifyScorers(((Show) event).playerNum, ((Show) event).hand, true);
         }
+    }
+
+    public void scoreNoPlay(int playerNum){
+        playerScores[playerNum] += 1;
+        CribbageLogger.getInstance().log(new Score("P" + playerNum, playerScores[playerNum], 1, null, "go", null));
     }
 }

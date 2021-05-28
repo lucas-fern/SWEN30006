@@ -44,6 +44,19 @@ public class HandleTotals implements ScoringEvent{
 
     @Override
     public int scoreForShow(Hand cardSet, int playerScore, int playerNum) {
+        for (Card first_card : cardSet.getCardList()){
+            for (Card second_card : cardSet.getCardList()){
+                if(Cribbage.cardValue(first_card) > 7)
+                    break;
+                if(Cribbage.cardValue(first_card) + Cribbage.cardValue(second_card) == 15){
+                    Hand hand = new Hand(deck);
+                    hand.insert(first_card, false);
+                    hand.insert(second_card, false);
+                    logger.log(new Score("P" + playerNum, playerScore + POINTS_FOR_TOTALS, POINTS_FOR_TOTALS, null, "fifteen", hand));
+                    playerScore += POINTS_FOR_TOTALS;
+                }
+            }
+        }
         return playerScore;
     }
 }

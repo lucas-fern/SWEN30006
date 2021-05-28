@@ -309,7 +309,7 @@ public class Cribbage extends CardGame {
             updateScore(0);
             updateScore(1);
         }
-        notifyObservers(new Go(s.lastPlayer));
+        CribbageScorer.getInstance(deck).scoreNoPlay(s.lastPlayer);
     }
 
     void showHandsCrib() {
