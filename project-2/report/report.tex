@@ -56,7 +56,7 @@ Subscribers are classes which implement the \verb|CribbageObserver| interface an
 \label{sec: crib scorer}
 The \verb|CribbageScorer| class, is cohesively responsible for handling all scoring events in the Cribbage game. \verb|CribbageScorer| subscribes to the \verb|Cribbage| class and its \verb|update()| method is called whenever an event (defined in Section \ref{sec: crib events}) occurs.\\[2mm]
 
-On creation of the \verb|CribbageScorer|, any method of scoring must subscribe to the \verb|CribbageScorer|, imilar to the \verb|CribbageObserver| interface. These methods all implement the \verb|ScoringEvent| interface with the 2 methods:
+On creation of the \verb|CribbageScorer|, any method of scoring must subscribe to the \verb|CribbageScorer|, similar to the \verb|CribbageObserver| interface. These methods all implement the \verb|ScoringEvent| interface with the 2 methods:
 \begin{figure}[H]
 \centering
 \begin{BVerbatim}
@@ -69,8 +69,27 @@ This allows for simple extensibility as any new method of scoring must only subs
 
 The distinction between the two methods \verb|int scoreForPlay()| and \verb|int scoreForShow()| allows for variations in scoring to be easily implemented. For example, if a variation did not include flushes then this would be implemented by not subscribing the \verb|HandleFlushes| class to \verb|CribbageScorer|, or if a variation were not to include runs in the \verb|show| phase of the game, then \verb|int scoreForShow()| in the \verb|Handleruns| class could simply return the \verb|playerScore| that was passed in.\\[2mm]
 
+Since there are many subscribers to the \verb|ScoringEvent| interface we deemed a factory to handle creation of such subscribers was appropriate.\\[2mm]
 
-On notification of any event, the cribbage scorer determines any cards that need to be stored as having been played, and notifies scorers to determine if a scoring situation has occurred.
+On notification of any event, the cribbage scorer determines any cards that need to be stored as having been played, and notifies scorers (all of the subscribed \verb|ScoringEvent|s to determine if a scoring situation has occurred.\\[2mm]
+
+The complete list of \verb|ScoringEvent|s implemented appears on the bottom left side of the class diagram, and their functionality is briefly summarised below:
+\begin{multicols}{2}
+    \begin{itemize}
+        \item \verb|HandleTotals|\\[2mm]
+        This \verb|ScoringEvent| determines points allocated for any combinations of 2 cards that reaches 15 as well as for when total face values reach 15 or 31. Points allocated for this is customisable with the \verb|POINTS_FOR_TOTALS| constant.
+        \item \verb|HandleFlushes|\\[2mm]
+        This \verb|ScoringEvent| determines points allocated for any combination of 4 or 5 like suited cards in the show phase. Its \verb|int scoreForPlay()| method is unimplemented
+        \item \verb|HandlePairs|\\[2mm]
+        This \verb|ScoringEvent| determines points allocated for any pair up to 4 of a kind. Points allocated for pairs of varied sizes can be adjusted with the \verb|PAIR_SCORE|, \verb|TRIP_SCORE| and \verb|QUAD_SCORE| constants.
+        \item \verb|HandleRuns|\\[2mm]
+        This \verb|ScoringEvent| determines points allocated for runs of cards, accounting for run sizes from \verb|SHORTEST_RUN| to \verb|min(LONGEST_RUN, handCards.size())| where \verb|handCards| is the card set from which runs are being searched for. This ensures the program does not search for a run greater than the amount of cards available in the given hand.
+        \item \verb|HandleStarters|\\[2mm]
+        This \verb|ScoringEvent| determines points allocated for the \verb|dealer| if the first card is a Jack as well as finding any scores from Jacks during the show phase.
+    \end{itemize}
+\end{multicols}
+
+
 \subsubsection{Cribbage Logger}
 \label{sec: crib logger}
 The \verb|CribbageLogger| class \hl{[singleton?]}, which appears in the bottom left of the class diagram, is cohesively responsible for all of the logging functionality of the game. As a subscriber to the \verb|Cribbage| class, the logger's \verb|update()| method is called whenever an event (defined in Section \ref{sec: crib events}) occurs. The event is passed through to the class in this method call.\\[2mm]
