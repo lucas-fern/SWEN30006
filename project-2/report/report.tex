@@ -66,12 +66,12 @@ int scoreForShow(Hand cardSet, int playerScore, int playerNum);
 \end{BVerbatim}
 \end{figure}
 \noindent The distinction between the two methods \verb|scoreForPlay()| and \verb|scoreForShow()| allows for variations in scoring to be easily implemented, since there certain behavioural differences between scoring events during and after the Play stage of the game. For example, flushes are only relevant in the show stage, so do not calculate a score in their \verb|scoreForPlay()| method.\\[2mm]
-This design also allows for more complex variations, for example, if an alternative ruleset did not include flushes then this would be implemented by not subscribing the \verb|HandleFlushes| class to the \verb|CribbageScorer|, or if a variation were to not include runs in the Show phase of the game, then \verb|scoreForShow()| in the \verb|Handleruns| class could simply return the \verb|playerScore| that was passed in.\\[2mm]
+This design also allows for more complex variations, for example, if an alternative ruleset did not include flushes then this would be implemented by not subscribing the \verb|HandleFlushes| class to the \verb|CribbageScorer|, or if a variation were to not include runs in the Show phase of the game, then \verb|scoreForShow()| in the \verb|HandleRuns| class could simply return the \verb|playerScore| that was passed in.\\[2mm]
 The complete list of \verb|ScoringEvent|s implemented appears on the bottom left side of the class diagram, and their functionality is briefly summarised below:
 \begin{multicols}{2}
     \begin{itemize}
         \item \verb|HandleTotals|\\[2mm]
-        This \verb|ScoringEvent| determines points allocated for any combinations of 2 cards who's scores sum to 15 as well as for when total face values reach 15 or 31. The amount of points allocated for this is customisable with the \verb|POINTS_FOR_TOTALS| constant.
+        This \verb|ScoringEvent| determines points allocated for any combinations of cards who's scores sum to 15 as well as for when total face values reach 15 or 31. The amount of points allocated for this is customisable with the \verb|POINTS_FOR_TOTALS| constant.
         \item \verb|HandleFlushes|\\[2mm]
         This \verb|ScoringEvent| determines points allocated for any combination of 4 or 5 cards of the same suit shown in the Show phase. Its \verb|scoreForPlay()| method is unimplemented.
         \item \verb|HandlePairs|\\[2mm]
@@ -117,9 +117,10 @@ The \verb|Cribbage| class is where most of the changes to existing classes were 
 \end{itemize}
 
 \section{Consideration of Alternative Designs}
-The final design presented in this report was the product of many design iterations. Originally, designs with high coupling to the \verb|Cribbage| class were considered as alternatives to the final design, which is centred around the implementation of the Observer pattern. These alternative implementations would have involved creating Logging and Scoring classes and calling these directly from the \verb|Cribbage| class when relevant events occurred in the game. This clearly causes enormous coupling between the classes since logging and scoring functionality is complex and required at all stages of the game.\\[2mm]
+The final design presented in this report was the product of many design iterations. Originally, designs with high coupling to the \verb|Cribbage| class were considered as alternatives to the final design, which is centred around the implementation of the Observer pattern. These alternative implementations would have involved creating Logging and Scoring classes and calling these directly from the \verb|Cribbage| class when relevant events occurred in the game. This clearly causes enormous coupling between the classes since logging and scoring functionality are complex and required at all stages of the game.\\[2mm]
 The final design is the antithesis of this highly coupled design, and was chosen for its implementation requiring extremely small changes to existing classes - these being the notifications to subscribers of new events. This design ultimately allows for so much extensibility that future editions of the game - such as an update of the GUI - could subscribe to the events raised by the observer pattern to conduct a variety of other operations (again such as updating GUI elements).\\[2mm]
-Alternatives were also considered to the implementation of the scoring method. Originally the score handling was done in methods of the \verb|ScoreHandler| class, but it was clear that the complexity of scoring rules and potential for extensibility made it a sensible design decision to extract each scoring rule into its own class and instantiate these within a factory.
+Alternatives were also considered to the implementation of the scoring method. Originally the score handling was done in methods of the \verb|ScoreHandler| class, but it was clear that the complexity of scoring rules and potential for extensibility made it a sensible design decision to extract each scoring rule into its own class and instantiate these within a factory.\\[2mm]
+Again, all of these design decisions and their integration with the existing system can be visualised with the help of the design class diagram on the following page.
 
 \includepdf[pages=1, fitpaper=true]{design-class-diag.pdf}
 \end{document}
