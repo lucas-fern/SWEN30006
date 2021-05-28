@@ -308,7 +308,7 @@ public class Cribbage extends CardGame {
                 }
             }
             if (s.newSegment) {
-
+                CribbageScorer.playHistory.removeAll(false);
                 segments.add(s.segment);
                 s.reset(segments);
             }
@@ -325,16 +325,13 @@ public class Cribbage extends CardGame {
         notifyObservers(new Show(players[0].toString(), starter.getLast(), CribbageScorer.playerHands[0], 0));
         scores = CribbageScorer.playerScores;
         updateScore(0);
-        updateScore(1);
         // score player 1 (dealer)
         notifyObservers(new Show(players[1].toString(), starter.getLast(), CribbageScorer.playerHands[1], 1));
         scores = CribbageScorer.playerScores;
-        updateScore(0);
         updateScore(1);
         // score crib (for dealer)
         notifyObservers(new Show(players[1].toString(), starter.getLast(), cloneHand(crib), 1));
         scores = CribbageScorer.playerScores;
-        updateScore(0);
         updateScore(1);
         // notify observers of each show
     }
