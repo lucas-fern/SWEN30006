@@ -36,12 +36,14 @@ public class CribbageScorer implements CribbageObserver{
         playHistory = new Hand(deck);
         playerHands = new Hand[]{new Hand(deck), new Hand(deck)};
 
+
+        ScorerFactory scoreFactory = new ScorerFactory();
         // Register the scorers to be used for the game
-        registerScorer(HandleTotals.getInstance(deck));
-        registerScorer(HandleFlushes.getInstance());
-        registerScorer(HandlePairs.getInstance(deck));
-        registerScorer(HandleRuns.getInstance(deck));
-        registerScorer(HandleStarters.getInstance(deck));
+        registerScorer(scoreFactory.getScoringEvent("TOTAL", deck));
+        registerScorer(scoreFactory.getScoringEvent("FLUSH", deck));
+        registerScorer(scoreFactory.getScoringEvent("PAIR", deck));
+        registerScorer(scoreFactory.getScoringEvent("RUN", deck));
+        registerScorer(scoreFactory.getScoringEvent("STARTER", deck));
     }
 
     public static CribbageScorer getInstance(Deck deck) {
