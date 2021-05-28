@@ -4,6 +4,8 @@ import ch.aplu.jcardgame.Card;
 import ch.aplu.jcardgame.Deck;
 import ch.aplu.jcardgame.Hand;
 
+import java.util.ArrayList;
+
 public class HandleTotals implements ScoringEvent{
 
     private final Deck deck;
@@ -44,19 +46,65 @@ public class HandleTotals implements ScoringEvent{
 
     @Override
     public int scoreForShow(Hand cardSet, int playerScore, int playerNum) {
+        ArrayList<Hand> pairs = new ArrayList<>();
+        ArrayList<Hand> triples = new ArrayList<>();
+        ArrayList<Hand> quads = new ArrayList<>();
+
+        ArrayList<int[]> usedPairs = new ArrayList<>();
+
         for (Card first_card : cardSet.getCardList()){
             for (Card second_card : cardSet.getCardList()){
-                if(Cribbage.cardValue(first_card) > 7)
-                    break;
-                if(Cribbage.cardValue(first_card) + Cribbage.cardValue(second_card) == 15){
-                    Hand hand = new Hand(deck);
-                    hand.insert(first_card, false);
-                    hand.insert(second_card, false);
-                    logger.log(new Score("P" + playerNum, playerScore + POINTS_FOR_TOTALS, POINTS_FOR_TOTALS, null, "fifteen", hand));
-                    playerScore += POINTS_FOR_TOTALS;
+                if(checkValidPair(first_card, second_card, usedPairs)) {
+                    int[] numberPair = {first_card.getCardNumber(), second_card.getCardNumber()};
+                    usedPairs.add(numberPair);
+                    Hand _a = new Hand(deck);
+                    Hand _b = Cribbage.cribbage.cloneHand(cardSet);
+
+                    _a.insert(_b.getCard(first_card.getCardNumber()).clone(), false);
+                    _a.insert(_b.getCard(second_card.getCardNumber()).clone(), false);
+                    _b.remove(_b.getCard(first_card.getCardNumber()), false);
+                    _b.remove(_b.getCard(second_card.getCardNumber()), false);
+
+                    pairs.add(_a);
+                    triples.add(_b);
                 }
             }
         }
+
+        for (Card card : cardSet.getCardList()){
+            Hand _c = Cribbage.cribbage.cloneHand(cardSet);
+            _c.remove(card.clone(), false);
+            quads.add(_c);
+        }
+
+        ArrayList<Hand> allHands = new ArrayList<>(pairs);
+        for(int i = triples.size()-1; i >=0; i--) allHands.add(triples.get(i));
+        allHands.addAll(quads);
+        allHands.add(cardSet);
+
+        for (Hand hand : allHands){
+            int score = 0;
+            for (Card card : hand.getCardList()) score += Cribbage.cardValue(card);
+
+            if (score == 15) {
+                logger.log(new Score("P" + playerNum, playerScore + POINTS_FOR_TOTALS, POINTS_FOR_TOTALS, null, "fifteen", hand));
+                playerScore += POINTS_FOR_TOTALS;
+            }
+        }
+
         return playerScore;
+
+
+    }
+
+    private boolean checkValidPair(Card a, Card b, ArrayList<int[]> usedPairs){
+        if(a.getCardNumber() == b.getCardNumber()) return false;
+        for (int[] pair : usedPairs) {
+            if (pair[0] == a.getCardNumber() && pair[1] == b.getCardNumber()) return false;
+            if (pair[0] == b.getCardNumber() && pair[1] == a.getCardNumber()) return false;
+        }
+
+        return true;
+
     }
 }

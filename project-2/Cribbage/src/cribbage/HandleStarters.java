@@ -35,9 +35,9 @@ public class HandleStarters implements ScoringEvent{
 
     @Override
     public int scoreForShow(Hand cardSet, int playerScore, int playerNum) {
-        Card starter = cardSet.getFirst();
+        Card starter = cardSet.getFirst().clone();
         for(Card card : cardSet.getCardList()){
-            if(card.getRank().toString().equals("J") && card.getSuit() == starter.getSuit()) {
+            if(card.getRank().toString().equals("JACK") && card.getSuit() == starter.getSuit()) {
                 Hand hand = new Hand(deck);
                 hand.insert(card, false);
                 logger.log(new Score("P" + playerNum, playerScore + 1, 1, null, "jack", hand));

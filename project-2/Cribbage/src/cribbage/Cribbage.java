@@ -37,7 +37,7 @@ public class Cribbage extends CardGame {
         return ((Cribbage.Rank) c.getRank()).value;
     }
 
-    private Hand cloneHand(Hand h){
+    public Hand cloneHand(Hand h){
         Hand hand = new Hand(deck);
         for (Card card : h.getCardList())
             hand.insert(card.clone(), false);
@@ -330,7 +330,9 @@ public class Cribbage extends CardGame {
         scores = CribbageScorer.playerScores;
         updateScore(1);
         // score crib (for dealer)
-        notifyObservers(new Show(players[1].toString(), starter.getLast(), cloneHand(crib), 1));
+        Hand clonedCrib = cloneHand(crib);
+        clonedCrib.insert(starter.getLast().clone(), false);
+        notifyObservers(new Show(players[1].toString(), starter.getLast(), clonedCrib, 1));
         scores = CribbageScorer.playerScores;
         updateScore(1);
         // notify observers of each show

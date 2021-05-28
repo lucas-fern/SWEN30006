@@ -27,17 +27,18 @@ public class HandleFlushes implements ScoringEvent {
 
     @Override
     public int scoreForShow(Hand cardSet, int playerScore, int playerNum) {
-        Card starter = cardSet.getFirst();
-        cardSet.removeFirst(false);
+        Hand clonedCardSet = Cribbage.cribbage.cloneHand(cardSet);
+        Card starter = clonedCardSet.getFirst();
+        clonedCardSet.removeFirst(false);
         for (Cribbage.Suit suit : Cribbage.Suit.values()){
             if(cardSet.getCardsWithSuit(suit).size() == 4){
                 if(starter.getSuit() == suit) {
-                    cardSet.insert(starter, false);
-                    logger.log(new Score("P" + playerNum, playerScore + 5, 5, null, "flush5", cardSet));
+                    clonedCardSet.insert(starter, false);
+                    logger.log(new Score("P" + playerNum, playerScore + 5, 5, null, "flush5", clonedCardSet));
                     playerScore += 5;
                 }
                 else {
-                    logger.log(new Score("P" + playerNum, playerScore + 4, 4, null, "flush4", null));
+                    logger.log(new Score("P" + playerNum, playerScore + 4, 4, null, "flush4", clonedCardSet));
                     playerScore += 4;
                 }
             }
