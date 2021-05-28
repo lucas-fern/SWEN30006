@@ -4,7 +4,7 @@ import ch.aplu.jcardgame.Deck;
 import ch.aplu.jcardgame.Hand;
 
 import java.util.ArrayList;
-
+import java.util.Collections;
 
 
 public class CribbageScorer implements CribbageObserver{
@@ -22,7 +22,11 @@ public class CribbageScorer implements CribbageObserver{
     public static void notifyScorers(int playerNum, Hand cardSet, boolean showScore){
         for (ScoringEvent scorer : scorers) {
             if (!showScore) playerScores[playerNum] = scorer.scoreForPlay(cardSet, playerScores[playerNum], playerNum);
-            else playerScores[playerNum] = scorer.scoreForShow(cardSet, playerScores[playerNum], playerNum);
+            else {
+                Hand sorted_hand = Cribbage.cribbage.cloneHand(cardSet);
+                sorted_hand.sort(Hand.SortType.POINTPRIORITY, false);
+                playerScores[playerNum] = scorer.scoreForShow(sorted_hand, playerScores[playerNum], playerNum);
+            }
         }
     }
 
