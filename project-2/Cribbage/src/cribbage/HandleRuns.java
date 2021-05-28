@@ -28,7 +28,7 @@ public class HandleRuns implements ScoringEvent {
     }
 
     @Override
-    public int scoreForPlay(CribbageEvent event, Hand cardSet, int playerScore, int playerNum) {
+    public int scoreForPlay(Hand cardSet, int playerScore, int playerNum) {
         ArrayList<Card> handCards = cardSet.getCardList();
         Hand cardsToSearch = new Hand(deck);
         if(handCards.size() >= 2) {
@@ -40,7 +40,7 @@ public class HandleRuns implements ScoringEvent {
 
         while(i<=min(LONGEST_RUN, handCards.size())){
             cardsToSearch.insert(handCards.get(handCards.size() - i), false);
-            playerScore = run_of_size(cardsToSearch, i, event, false, playerScore, playerNum);
+            playerScore = run_of_size(cardsToSearch, i, false, playerScore, playerNum);
             i+= 1;
         }
 
@@ -48,17 +48,17 @@ public class HandleRuns implements ScoringEvent {
     }
 
     @Override
-    public int scoreForShow(CribbageEvent event, Hand cardSet, int playerScore, int playerNum) {
+    public int scoreForShow(Hand cardSet, int playerScore, int playerNum) {
         int i = SHORTEST_RUN;
         while(i<=min(LONGEST_RUN, cardSet.getNumberOfCards())){
-            playerScore = run_of_size(cardSet, i, event, true, playerScore, playerNum);
+            playerScore = run_of_size(cardSet, i, true, playerScore, playerNum);
             i += 1;
         }
 
         return playerScore;
     }
 
-    private int run_of_size(Hand cardsToSearch, int runLength, CribbageEvent event, boolean displayCards, int playerScore, int playerNum){
+    private int run_of_size(Hand cardsToSearch, int runLength, boolean displayCards, int playerScore, int playerNum){
         for (Hand hand : cardsToSearch.extractSequences(runLength)){
             if (displayCards) {
                 Cribbage.notifyObservers(new Score("P" + playerNum, playerScore + runLength, runLength, null, "run" + runLength, hand));

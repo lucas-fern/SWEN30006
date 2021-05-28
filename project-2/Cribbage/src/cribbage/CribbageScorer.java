@@ -1,17 +1,15 @@
 package cribbage;
 
-import ch.aplu.jcardgame.Card;
 import ch.aplu.jcardgame.Deck;
 import ch.aplu.jcardgame.Hand;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 
 
 public class CribbageScorer implements CribbageObserver{
 
-    private static ArrayList<ScoringEvent> scorers = new ArrayList<>();
+    private static final ArrayList<ScoringEvent> scorers = new ArrayList<>();
 
     /**
      * Register a new CribbageScorer.
@@ -21,10 +19,13 @@ public class CribbageScorer implements CribbageObserver{
         scorers.add(newSco);
     }
 
+    public static void notifyScorers(int playerNum, Hand cardSet, boolean showScore){
+        for (ScoringEvent scorer : scorers) {
+            if (!showScore) playerScores[playerNum] = scorer.scoreForPlay(cardSet, playerScores[playerNum], playerNum);
+            else playerScores[playerNum] = scorer.scoreForShow(cardSet, playerScores[playerNum], playerNum);
+        }
+    }
 
-    private static Deck deck;
-    private static final int LONGEST_RUN = 7;
-    private static final int SHORTEST_RUN = 3;
     private static CribbageScorer singletonInstance;
     public static Hand playHistory;
     public static Hand[] playerHands;
@@ -33,10 +34,7 @@ public class CribbageScorer implements CribbageObserver{
 
     private CribbageScorer(Deck deck){
         playHistory = new Hand(deck);
-        playerHands = new Hand[2];
-        playerHands[0] = new Hand(deck);
-        playerHands[1] = new Hand(deck);
-        this.deck = deck;
+        playerHands = new Hand[]{new Hand(deck), new Hand(deck)};
 
         // Register the scorers to be used for the game
         registerScorer(HandlePairs.getInstance(deck));
@@ -54,26 +52,24 @@ public class CribbageScorer implements CribbageObserver{
 
     @Override
     public void update(CribbageEvent event) {
-        if(event.eventId.equals("starter")){
-            playerHands[0].insert(((PlayStarter) event).starter, false);
-            playerHands[1].insert(((PlayStarter) event).starter, false);
-        }
-        // If event is an instance of "Play" add it to the hand history
-        else if(event.eventId.equals("play")){
-            playHistory.insert(((Play) event).playedCard, true);
-            playerHands[((Play) event).playerNum].insert(((Play) event).playedCard, false);
-            for (ScoringEvent scorer : scorers){
-                playerScores[((Play) event).playerNum] = scorer.scoreForPlay(event, playHistory, playerScores[((Play) event).playerNum], ((Play) event).playerNum);
-            }
-        }
-        else if(event.eventId.equals("show")){
-            for (ScoringEvent scorer : scorers){
-                playerScores[((Show) event).playerNum] = scorer.scoreForShow(event, ((Show) event).hand, playerScores[((Show) event).playerNum], ((Show) event).playerNum);
-            }
-        }
-        else if(event.eventId.equals("go")){
+        switch (event.eventId) {
+            case "starter":
+                playerHands[0].insert(((PlayStarter) event).starter, false);
+                playerHands[1].insert(((PlayStarter) event).starter, false);
+                break;
+            // If event is an instance of "Play" add it to the hand history
+            case "play":
+                playHistory.insert(((Play) event).playedCard, false);
+                playerHands[((Play) event).playerNum].insert(((Play) event).playedCard, false);
+                notifyScorers(((Play) event).playerNum, playHistory, false);
+                break;
+            case "show":
+                notifyScorers(((Show) event).playerNum, ((Show) event).hand, true);
+                break;
+            case "go":
                 playerScores[((Go) event).playerNum] += 1;
                 Cribbage.notifyObservers(new Score("P" + ((Go) event).playerNum, playerScores[((Go) event).playerNum], 1, null, "go", null));
+                break;
         }
     }
 }

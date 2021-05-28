@@ -8,6 +8,8 @@ public class HandleTotals implements ScoringEvent{
 
     private static Deck deck;
     private static HandleTotals singletonInstance;
+    private static final int POINTS_FOR_TOTALS = 2;
+
 
     private HandleTotals(Deck deck){
         this.deck = deck;
@@ -22,7 +24,7 @@ public class HandleTotals implements ScoringEvent{
 
 
     @Override
-    public int scoreForPlay(CribbageEvent event, Hand cardSet, int playerScore, int playerNum) {
+    public int scoreForPlay(Hand cardSet, int playerScore, int playerNum) {
         int totalPlayed = 0;
         for (Card card : cardSet.getCardList()) totalPlayed += Cribbage.cardValue(card);
 
@@ -32,14 +34,14 @@ public class HandleTotals implements ScoringEvent{
                 number = "fifteen";
             else
                 number = "thirtyone";
-            Cribbage.notifyObservers(new Score("P" + playerNum, playerScore + 2, 2, null, number, null));
-            playerScore += 2;
+            Cribbage.notifyObservers(new Score("P" + playerNum, playerScore + POINTS_FOR_TOTALS, POINTS_FOR_TOTALS, null, number, null));
+            playerScore += POINTS_FOR_TOTALS;
         }
         return playerScore;
     }
 
     @Override
-    public int scoreForShow(CribbageEvent event, Hand cardSet, int playerScore, int playerNum) {
+    public int scoreForShow(Hand cardSet, int playerScore, int playerNum) {
         return playerScore;
     }
 }
