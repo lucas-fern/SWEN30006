@@ -6,7 +6,7 @@ import ch.aplu.jcardgame.Hand;
 
 public class HandleStarters implements ScoringEvent{
 
-    private static Deck deck;
+    private final Deck deck;
     private static HandleStarters singletonInstance;
     private static CribbageLogger logger;
     private boolean starterCardScored = false;

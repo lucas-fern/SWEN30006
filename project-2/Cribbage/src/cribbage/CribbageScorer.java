@@ -57,13 +57,13 @@ public class CribbageScorer implements CribbageObserver{
         // If event is an instance of "Play" add it to the hand history
         switch (event.eventId) {
             case "starter" -> {
-                playerHands[0].insert(((PlayStarter) event).starter, false);
-                playerHands[1].insert(((PlayStarter) event).starter, false);
+                playerHands[0].insert(((PlayStarter) event).starter.clone(), false);
+                playerHands[1].insert(((PlayStarter) event).starter.clone(), false);
                 notifyScorers(1, playerHands[0], false);
             }
             case "play" -> {
-                playHistory.insert(((Play) event).playedCard, false);
-                playerHands[((Play) event).playerNum].insert(((Play) event).playedCard, false);
+                playHistory.insert(((Play) event).playedCard.clone(), false);
+                playerHands[((Play) event).playerNum].insert(((Play) event).playedCard.clone(), false);
                 notifyScorers(((Play) event).playerNum, playHistory, false);
             }
             case "show" -> notifyScorers(((Show) event).playerNum, ((Show) event).hand, true);
@@ -72,6 +72,7 @@ public class CribbageScorer implements CribbageObserver{
 
     public void scoreNoPlay(int playerNum){
         playerScores[playerNum] += 1;
+        playHistory.removeAll(false);
         CribbageLogger.getInstance().log(new Score("P" + playerNum, playerScores[playerNum], 1, null, "go", null));
     }
 }

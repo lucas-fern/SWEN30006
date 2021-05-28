@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class HandleRuns implements ScoringEvent {
 
-    private static Deck deck;
+    private final Deck deck;
     private static HandleRuns singletonInstance;
     private static CribbageLogger logger;
 

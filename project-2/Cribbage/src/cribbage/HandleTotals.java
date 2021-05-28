@@ -6,7 +6,7 @@ import ch.aplu.jcardgame.Hand;
 
 public class HandleTotals implements ScoringEvent{
 
-    private static Deck deck;
+    private final Deck deck;
     private static HandleTotals singletonInstance;
     private static CribbageLogger logger;
     private static final int POINTS_FOR_TOTALS = 2;

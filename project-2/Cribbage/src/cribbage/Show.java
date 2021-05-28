@@ -21,8 +21,4 @@ public class Show extends CribbageEvent {
     public String toString() {
         return super.eventId + "," + playerId + "," + Cribbage.canonical(starter) + "+" + Cribbage.canonical(hand);
     }
-
-    public String getPlayerId(){
-        return playerId;
-    }
 }

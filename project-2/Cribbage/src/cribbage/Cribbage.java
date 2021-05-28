@@ -37,6 +37,13 @@ public class Cribbage extends CardGame {
         return ((Cribbage.Rank) c.getRank()).value;
     }
 
+    private Hand cloneHand(Hand h){
+        Hand hand = new Hand(deck);
+        for (Card card : h.getCardList())
+            hand.insert(card.clone(), false);
+        return hand;
+    }
+
     /*
     Canonical String representations of Suit, Rank, Card, and Hand
     */
@@ -275,7 +282,7 @@ public class Cribbage extends CardGame {
                 if (s.go) {
                     // Another "go" after previous one with no intervening cards
                     // lastPlayer gets 1 point for a "go"
-                    notifyObservers(new Go((currentPlayer + 1) % 2));
+                    CribbageScorer.getInstance(deck).scoreNoPlay(s.lastPlayer);
                     s.newSegment = true;
                 } else {
                     // currentPlayer says "go"
@@ -291,7 +298,6 @@ public class Cribbage extends CardGame {
 
                 if (total(s.segment) == thirtyone) {
                     // lastPlayer gets 2 points for a 31
-                    CribbageScorer.playHistory.removeAll(true);
                     s.newSegment = true;
                     currentPlayer = (currentPlayer + 1) % 2;
                 } else {
@@ -302,6 +308,7 @@ public class Cribbage extends CardGame {
                 }
             }
             if (s.newSegment) {
+
                 segments.add(s.segment);
                 s.reset(segments);
             }
@@ -325,7 +332,7 @@ public class Cribbage extends CardGame {
         updateScore(0);
         updateScore(1);
         // score crib (for dealer)
-        notifyObservers(new Show(players[1].toString(), starter.getLast(), crib, 1));
+        notifyObservers(new Show(players[1].toString(), starter.getLast(), cloneHand(crib), 1));
         scores = CribbageScorer.playerScores;
         updateScore(0);
         updateScore(1);

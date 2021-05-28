@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class HandlePairs implements ScoringEvent{
 
-    private static Deck deck;
+    private final Deck deck;
     private static HandlePairs singletonInstance;
     private static CribbageLogger logger;
 
