@@ -83,7 +83,8 @@ The complete list of \verb|ScoringEvent|s implemented appears on the bottom left
     \end{itemize}
 \end{multicols}
 \noindent This design allows for simple extensibility as any new method of scoring can simply be defined as a new class inheriting the \verb|ScoringEvent| interface, and once it is added to the \verb|ScorerFactory| it will be interrogated for score updates after each Play and Show event.\\[2mm]
-Finally, the logging functionality for scores is enabled by each of the \verb|ScoringEvent|s. Once the amount of points scored by an event is determined, the score handler is able to access the singleton \verb|CribbageLogger| instance and provide it with a \verb|new Score| event. By creating a score event with all the required logging information the remaining logging behaviour is all handled inside the \verb|CribbageLogger| class and thus cohesion within the \verb|ScoringEvents| is maximised. The internal behaviour of the \verb|CribbageLogger| will be discussed in detail below.
+Finally, the logging functionality for scores is enabled by each of the \verb|ScoringEvent|s. Once the amount of points scored by an event is determined, the score handler is able to access the singleton \verb|CribbageLogger| instance and provide it with a \verb|new Score| event. If multiple score events are raised in this process, the \verb|ScoringEvent|s are responsible for ordering the output to the log. This required the implementation of a \verb|Comparator<Hand>| so that certain event logs were able to be printed in alphabetical order.\\[2mm]
+By creating a score event with all the required logging information the remaining logging behaviour is all handled inside the \verb|CribbageLogger| class and thus cohesion within the \verb|ScoringEvents| is maximised. The internal behaviour of the \verb|CribbageLogger| will be discussed in detail below.
 
 \subsubsection{Cribbage Logger}
 \label{sec: crib logger}
