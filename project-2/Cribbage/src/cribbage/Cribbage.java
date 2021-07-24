@@ -442,4 +442,11 @@ public class Cribbage extends CardGame {
 
         new Cribbage();
     }
+
+    public int saleMade() {
+        return Counter.getnext();
+    }
 }
+
+
+
